@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
+<style>
+body{margin:0;background:#0d0b08;font-family:'Noto Sans SC',system-ui,sans-serif;color:#f0e8d8}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:.95}
+::selection{background:#ff5230;color:#0d0b08}
+@media(max-width:820px){
+[style*="right:calc(50% - 550px + 32px)"]{display:none!important}
+[style*="padding:48px 230px 80px 32px"]{padding:40px 28px 64px 28px!important}
+[style*="font-size:38px"]{font-size:29px!important}
+}
+@media(max-width:560px){
+[style*="padding:48px 230px 80px 32px"]{padding:30px 18px 54px 18px!important}
+[style*="font-size:38px"]{font-size:24px!important}
+[style*="padding:15px 32px"]{padding:13px 18px!important}
+[style*="min-width:640px"]{font-size:12.5px!important}
+[style*="margin-top:48px;padding-top:24px"]{flex-wrap:wrap!important;gap:12px!important}
+}
+</style>
+</helmet>
+
+<div data-screen-label="随笔正文" style="min-height:100vh">
+  <div style="{{ artProgStyle }}"></div>
+
+  <div style="position:sticky;top:0;z-index:15;background:rgba(13,11,8,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(240,232,216,.1)">
+    <div style="max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:15px 32px">
+      <a href="首页.dc.html#timeline" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#9a8f7c;transition:color .15s" style-hover="color:#ff5230">← 返回时间线</a>
+      <a href="首页.dc.html" style="font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:18px;font-weight:700">xiaoliang<span style="color:#ff5230">.</span></a>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#ff5230">已读 {{ artProgPct }}</span>
+    </div>
+  </div>
+
+  <div style="position:relative;max-width:1100px;margin:0 auto">
+    <div style="position:fixed;right:calc(50% - 550px + 32px);top:120px;width:150px;z-index:10">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:#9a8f7c;margin-bottom:10px">目录 · TOC</div>
+      <sc-for list="{{ tocItems }}" as="item" hint-placeholder-count="8">
+        <a href="{{ item.href }}" style="{{ item.style }}">{{ item.label }}</a>
+      </sc-for>
+    </div>
+
+    <div style="padding:48px 230px 80px 32px">
+      <div style="display:flex;gap:10px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;border:1px solid rgba(240,232,216,.28);border-radius:99px;padding:3px 11px;color:#c9c0ad">Vibe Coding</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;border:1px solid rgba(240,232,216,.28);border-radius:99px;padding:3px 11px;color:#c9c0ad">AI 开发</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;border:1px solid rgba(240,232,216,.28);border-radius:99px;padding:3px 11px;color:#c9c0ad">方法论</span>
+      </div>
+      <h1 style="margin:22px 0 0;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:38px;font-weight:700;line-height:1.6">一个人怎么做一个产品：<span style="color:#ff5230">Vibe Coding</span> 的完整开发流程</h1>
+      <div style="margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#9a8f7c">2026-11-07 · 约 15 分钟 · xiaoliang</div>
+
+      <div style="margin-top:36px;border-left:2px solid #ff5230;background:#14100b;padding:20px 24px;border-radius:0 12px 12px 0;font-size:14.5px;line-height:2;color:#c9c0ad">
+        AI 让写代码变便宜了，但「做什么、为什么做、做到什么程度算好」这些判断，并没有因此变便宜。Vibe Coding 不是「把需求丢给 AI 就完事」，而是一套新的分工：人负责判断，AI 负责执行。这篇文章把这套分工写成一套完整的流程——<b style="color:#f0e8d8">八个阶段，每个阶段做什么、谁主导、交付什么、以什么标准才算过关</b>。本文的起点，是朋友王书也在群聊里分享的他们团队的 AI 开发流程。
+      </div>
+
+      <h2 id="s0" style="margin:44px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">00</span>先说框架：个人即产品，AI 只是执行者</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">Vibe Coding 是一种以自然语言描述意图、由 AI 生成代码的开发方式。它改变的不是「写代码」本身，而是分工：过去一个人要同时做产品判断和代码实现，现在<b style="color:#f0e8d8">判断留给人，执行交给 AI</b>。分工变了，流程也要变——如果还按老办法想到哪写到哪，AI 只会更快地把一个没想清楚的需求实现出来。</p>
+
+      <p style="margin:14px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">这套流程只有三个角色。<b style="color:#f0e8d8">你同时是产品负责人与业务方</b>，定方向、定优先级、定「做到什么程度算好」；<b style="color:#f0e8d8">专业领域负责人</b>懂业务规则，在 AI 力有不逮时校验规则、补充细节；<b style="color:#f0e8d8">AI 是执行者</b>，写代码、跑测试、改 Bug，但不做业务判断。角色不清，后面全会乱：AI 开始替你编业务规则，你又开始替 AI 写代码。</p>
+
+      <div style="margin-top:26px;display:flex;gap:8px;flex-wrap:wrap">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(255,82,48,.5);color:#ff5230;border-radius:8px;padding:8px 14px">01 提需求</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(240,232,216,.2);color:#c9c0ad;border-radius:8px;padding:8px 14px">02 需求文档</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(240,232,216,.2);color:#c9c0ad;border-radius:8px;padding:8px 14px">03 设计与拆分</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(240,232,216,.2);color:#c9c0ad;border-radius:8px;padding:8px 14px">04 Demo 与评审</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(240,232,216,.2);color:#c9c0ad;border-radius:8px;padding:8px 14px">05 两份文档</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(240,232,216,.2);color:#c9c0ad;border-radius:8px;padding:8px 14px">06 AI 落地</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(240,232,216,.2);color:#c9c0ad;border-radius:8px;padding:8px 14px">07 验收</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(240,232,216,.2);color:#c9c0ad;border-radius:8px;padding:8px 14px">08 上线与迭代</span>
+</div>
+
+      <p style="margin:14px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">为什么个人开发也需要门禁？道理和第一篇一样：软件项目的错误成本是<b style="color:#f0e8d8">指数放大</b>的。需求阶段说错一句话，改一下文档就行；到了 AI 已经写完代码才发现，返工的是整个模块。AI 让「写出来」变便宜了，错误的成本反而前移——<span style="color:#ff5230">门禁的本质，是把错误拦在最便宜的阶段</span>。</p>
+
+      <h2 id="s1" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">01</span>提需求——从业务出发</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">一切从业务问题开始，不是从技术开始。先想清楚「为谁解决什么问题」，再谈「用什么做」。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>回答四个问题：谁在用，现在是怎么做的；实际卡在哪，是慢、容易错，还是根本做不了；现在的替代做法是什么，代价多大；提效指标是什么，必须能量化——比如「原来手动测 10 个节点要 5 分钟，改成一键测完，30 秒内出结果」。</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>你（产品负责人）。技术选型这时还不需要进场。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>一句话需求、可量化的提效指标、现状基线数据。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>指标能量化、基线可测。写不出指标的需求，退回重写，不进入下一阶段。</div></div>
+
+      <div style="margin:18px 0 0;border-left:2px solid rgba(255,82,48,.6);background:#14100b;padding:14px 20px;border-radius:0 10px 10px 0;font-size:14px;line-height:2;color:#c9c0ad"><b style="color:#ff5230">常见的坑：</b>从技术出发提需求，比如「用 Go 写一个测速工具」——技术只是手段，换种技术也能实现，真正要回答的是「测速慢到底耽误了什么」。另一个坑是指标不可测，比如「体验更好」，做完之后没人能判断到底好没好。</div>
+
+      <h2 id="s2" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">02</span>需求文档——自己写，讲清业务价值</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">需求文档的初稿必须自己写，不能交给 AI 起草。AI 不知道你的真实场景，它只能按通用模板编一套看起来完整的文档——看起来完整，恰恰是最危险的。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>写清五件事：业务背景（为什么现在要做）；用户与使用场景（谁、在什么情况下、用它解决什么）；实际遇到的问题，配真实例子、截图、数据或报错；业务价值（省多少时间、少多少错）；明确不做什么（边界不清，AI 会越做越多）。</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>你。专业领域负责人协助核对业务事实。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>《需求文档》v1。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>一个不懂你业务的人看完，能复述出「为谁解决什么问题」。复述不出来，说明文档还没写清楚。</div></div>
+
+      <div style="margin:18px 0 0;border-left:2px solid rgba(255,82,48,.6);background:#14100b;padding:14px 20px;border-radius:0 10px 10px 0;font-size:14px;line-height:2;color:#c9c0ad"><b style="color:#ff5230">常见的坑：</b>把初稿交给 AI 的典型结果，是文档里出现你从没遇到过的「用户痛点」——编得越像真的，评审时越难发现。初稿只能出自真实经历，AI 可以帮你润色措辞，不能帮你编造事实。</div>
+
+      <h2 id="s3" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">03</span>设计与拆分——先定方案，再写代码</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">需求冻结后，再谈怎么做。设计这一步的目标只有一个：把一个大需求拆成若干个最小可验证的模块，每个模块只解决一个问题，每一步都能独立跑起来。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>用户流程（从进来到拿到结果，一共几步）；功能拆分（最小可验证的模块）；数据与规则（输入是什么、输出是什么、边界条件与异常怎么处理）；技术选型（够用就行，不追时髦）。</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>你。技术细节可以请 AI 给出选项，但取舍由你定。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>功能清单、流程图、关键业务规则草稿。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>每个模块都能独立验证。拆不下去的模块，说明需求还不够清楚，退回第 02 步。</div></div>
+
+      <h2 id="s4" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">04</span>Demo 与评审——先看到，再决定做不做</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">不要直接让 AI 写完整产品。先做一个能点的交互 Demo，哪怕是假数据：页面长什么样、按钮在哪、点完发生什么。看得见的东西，才值得讨论。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>产出可点击的交互 Demo；开评审会，先讲业务背景与遇到的困难，再讲方案带来的提升、解决了什么问题；参会人只问三个问题：这解决的是真问题吗？流程顺吗？有没有更简单的做法？</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>你主持评审；专业领域负责人与真实用户参加。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>交互 Demo、评审结论。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>通过 / 改一版 / 不做，三选一。评审不通过，不进开发。</div></div>
+
+      <div style="margin-top:20px;border:1px solid rgba(255,82,48,.4);border-radius:14px;padding:20px 26px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><b style="color:#ff5230">评审关口：</b>通过 → 进第 05 步；改一版 → 回第 03 步；不做 → 停。<b style="color:#f0e8d8">这一步省掉，后面返工最贵。</b></div>
+
+      <h2 id="s5" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">05</span>两份文档——评审通过后，才交给 AI</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">这是整套流程最关键的顺序：先评审，再出文档。评审之前写文档，写的是未经验证的猜测；评审之后写文档，写的是已经达成共识的决定。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>《需求文档》定稿：背景、目标、用户、流程、验收标准；《业务规则文档》：功能拆分后的每条规则，写成「如果……那么……」的形式，比如「如果节点超时超过 300ms，那么记为不可用，不拖住整张表」「如果测速失败，那么显示错误原因，不显示假数据」。</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>你。专业领域负责人逐条核对业务规则。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>《需求文档》定稿、《业务规则文档》。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>AI 读完这两份文档，不用再反问业务问题就能开工。写不出来，说明前面的需求还没想清楚，回去补，不是让 AI 猜。</div></div>
+
+      <div style="margin:18px 0 0;border-left:2px solid rgba(255,82,48,.6);background:#14100b;padding:14px 20px;border-radius:0 10px 10px 0;font-size:14px;line-height:2;color:#c9c0ad"><b style="color:#ff5230">常见的坑：</b>顺序颠倒是最常见的失误：先让 AI 写代码，写到一半发现规则不对，再回头补文档。这时文档补的是「代码实际做了什么」，而不是「业务应该是什么」，已经失去了约束作用。</div>
+
+      <h2 id="s6" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">06</span>AI 落地——小步快跑，一次一个模块</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">到了这一步，AI 才真正进场。原则只有一条：一次只交一个模块，做完、跑通、验收，再交下一个。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>每项任务固定包含六个字段：背景、要改的文件、输入输出、业务规则、验收标准、不许动的东西；每步都要可运行、可验证，不接受「大概写完了」；遇到专业领域弱的地方，先由领域强的人把规则写成文字或测试用例，再让 AI 按规则实现。</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>AI 执行；你逐模块验收。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>可运行的版本、每次改动的记录。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>本模块验收通过，才交下一个模块。AI 写完你没看过的代码，不要直接合并。</div></div>
+
+      <div style="margin:18px 0 0;border-left:2px solid rgba(255,82,48,.6);background:#14100b;padding:14px 20px;border-radius:0 10px 10px 0;font-size:14px;line-height:2;color:#c9c0ad"><b style="color:#ff5230">常见的坑：</b>一次扔给 AI 十个功能，出问题时不知道是哪一步坏的——只能全部推倒重来。小步快跑看起来慢，实际上是唯一快的做法：每一步的错误都只影响一步。</div>
+
+      <p style="margin:14px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">举个例子：一个节点测速功能，按这套流程走是这样的——业务问题是手动一个个测节点太慢，指标是「一次测完所有节点，总耗时约等于最慢的成功项」；方案是并发测速加每个节点单独超时；Demo 是节点列表页加测速按钮加结果展示；评审通过后，业务规则写成「超时 300ms 记不可用」「收到的结果数必须等于启动的测速数」；再一个模块一个模块交给 AI，最后按真实节点验收。</p>
+
+      <h2 id="s7" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">07</span>验收——四项标准，逐条过</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">验收的标准在第 05 步就已经定好了，现在只是逐条执行。标准不是事后补的，是事前写进文档的。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>功能验收（需求文档里的每条都跑一遍）；业务验收（用真实场景测，不只测 happy path）；边界验收（超时、断网、空数据、错误输入）；指标验收（回到第 01 步的提效指标，真的变快、变准了吗）。</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>你。专业领域负责人参与业务验收。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>验收记录（哪条过了、哪条没过、为什么）。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>四项全部通过才算完成。不通过，回第 06 步改，改完再验收，不把问题带到上线。</div></div>
+
+      <h2 id="s8" style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">08</span>上线与迭代——回到业务</h2>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">上线不是结束，是下一轮的开始。Vibe Coding 的循环在这里闭合：真实使用中产生的新问题，重新回到第 01 步，提新的需求。</p>
+
+      <div style="margin:18px 0 0;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:18px 22px;background:#14100b;font-size:14.5px;line-height:1.95;color:#c9c0ad"><div><b style="color:#f0e8d8">做什么：</b>监控真实使用数据与提效指标，看有没有达到预期；收集新问题，排优先级；小优化走短流程，大改动重新走评审。</div><div style="margin-top:10px"><b style="color:#f0e8d8">谁主导：</b>你。</div><div style="margin-top:10px"><b style="color:#f0e8d8">交付物：</b>运维与迭代计划、复盘记录。</div><div style="margin-top:10px"><b style="color:#f0e8d8">出口门禁：</b>进入循环（无终点）。</div></div>
+
+      <p style="margin:14px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">开头那句「不断做网络优化和任务编排来提升效率」，说的就是这一环：上线后的优化不是零散的修补，而是带着指标、排着优先级、一轮一轮地回到业务里去。</p>
+
+      <h2 style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700">一张总表：八个阶段怎么收口</h2>
+
+      <div style="margin-top:26px;overflow-x:auto;border:1px solid rgba(240,232,216,.14);border-radius:12px">
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px">
+          <thead><tr>
+            <th style="text-align:left;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#9a8f7c;border-bottom:1px solid rgba(240,232,216,.14)">阶段</th>
+            <th style="text-align:left;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#9a8f7c;border-bottom:1px solid rgba(240,232,216,.14)">核心问题</th>
+            <th style="text-align:left;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#9a8f7c;border-bottom:1px solid rgba(240,232,216,.14)">关键交付物</th>
+            <th style="text-align:left;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:#9a8f7c;border-bottom:1px solid rgba(240,232,216,.14)">出口门禁</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">提需求</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">做不做、为谁做</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">一句话需求、提效指标、基线数据</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">指标可量化、基线可测</td>
+            </tr>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">需求文档</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">解决什么问题</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">《需求文档》v1</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">陌生人能复述业务价值</td>
+            </tr>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">设计与拆分</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">怎么做</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">功能清单、流程图、业务规则草稿</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">每个模块可独立验证</td>
+            </tr>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">Demo 与评审</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">值不值得做</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">交互 Demo、评审结论</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">评审通过（或改一版 / 不做）</td>
+            </tr>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">两份文档</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">规则写清楚没有</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">《需求文档》定稿、《业务规则文档》</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">AI 读完可直接开工</td>
+            </tr>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">AI 落地</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">做出来</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">可运行版本、改动记录</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">本模块验收通过</td>
+            </tr>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">验收</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">做对没有</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">验收记录</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;border-bottom:1px solid rgba(240,232,216,.08)">四项标准全部通过</td>
+            </tr>
+            <tr>
+<td style="padding:11px 16px;color:#f0e8d8;font-weight:700;vertical-align:top;line-height:1.7;">上线与迭代</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;">持续运转</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;">运维报告、迭代计划、复盘</td>
+<td style="padding:11px 16px;color:#c9c0ad;vertical-align:top;line-height:1.7;">—（进入循环）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin:44px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">流程是形，纪律是神。把八个阶段走完不难，难的是守住下面这三条：</p>
+      <div style="margin-top:20px;border:1px solid rgba(255,82,48,.4);border-radius:14px;padding:26px 30px;background:#14100b">
+        <div id="s9" style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;color:#ff5230">三条比流程更重要的纪律</div>
+        <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:1.95;color:#f0e8d8">
+<span><span style="color:#ff5230;font-family:'JetBrains Mono',monospace">1.</span> <b>业务判断不外包。</b>AI 可以写代码，不可以替你决定「做什么、为什么做、做到什么程度算好」。需求、优先级、验收标准，始终是人的工作——外包出去的那一刻，产品就不再是你的。</span>
+<span><span style="color:#ff5230;font-family:'JetBrains Mono',monospace">2.</span> <b>评审不过，不进开发。</b>Demo 和评审是唯一的关口。省掉它，返工的成本会在后面成倍出现。可以裁剪评审的形式（一个人对着 Demo 自问自答也算评审），但不能裁剪「有人在写代码之前先看一眼」这件事。</span>
+<span><span style="color:#ff5230;font-family:'JetBrains Mono',monospace">3.</span> <b>一次只交一个模块。</b>每步都可运行、可验证、可回退；验收通过再继续，问题不带到下一步。Vibe Coding 最大的诱惑是一次性把需求全扔给 AI，最大的代价也是这个。</span>
+        </div>
+      </div>
+
+      <h2 style="margin:40px 0 0;display:flex;align-items:baseline;gap:12px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ff5230">附</span>给 AI 的任务模板（每次只交一个模块）</h2>
+
+      <div style="margin-top:20px;border:1px solid rgba(240,232,216,.14);border-radius:12px;padding:20px 24px;background:#14100b;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2;color:#c9c0ad">背景：[一句话业务背景 + 现在卡在哪]<br>任务：[只做这一个模块，别的功能不动]<br>要改的文件：[列出文件路径]<br>输入 / 输出：[输入是什么，输出应该是什么样]<br>业务规则：[如果……那么……，逐条写]<br>验收标准：[跑什么命令 / 点什么按钮，看到什么结果算通过]<br>不许动的东西：[别碰的文件、别改的逻辑]<br>完成后：[告诉我改了哪些文件，跑通的结果是什么]</div>
+
+      <p style="margin:16px 0 0;font-size:15px;line-height:2.1;color:#c9c0ad">最后想说：流程不是目的，它存在的意义是<b style="color:#f0e8d8">让一个人的判断，在 AI 的执行力放大之前先被检验一遍</b>。第一篇讲的是公司里一群人怎么协作，这一篇讲的是一个人怎么借助 AI 做产品——规模不同，道理相同。小团队可以裁剪环节，但「阶段有出口标准、交付物向下游负责、变更走明路」这三件事，多小的团队都不该省；一个人也一样。</p>
+
+      <div style="margin-top:48px;padding-top:24px;border-top:1px solid rgba(240,232,216,.12);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#9a8f7c">下一篇 · 更多随笔正在路上 …</span>
+        <div style="display:flex;gap:12px">
+          <a href="留言墙.dc.html" style="font-size:13px;color:#9a8f7c;border:1px solid rgba(240,232,216,.25);border-radius:99px;padding:7px 18px;transition:all .15s" style-hover="background:#f0e8d8;color:#0d0b08">去留言墙说说 →</a>
+          <a href="首页.dc.html" style="font-size:13px;color:#9a8f7c;border:1px solid rgba(240,232,216,.25);border-radius:99px;padding:7px 18px;transition:all .15s" style-hover="background:#f0e8d8;color:#0d0b08">回首页</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { ap: 0 };
+
+  componentDidMount() {
+    this._sc = () => {
+      const h = document.documentElement;
+      const m = h.scrollHeight - h.clientHeight;
+      this.setState({ ap: m > 0 ? h.scrollTop / m : 0 });
+    };
+    window.addEventListener('scroll', this._sc, { passive: true });
+    this._sc();
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this._sc); }
+
+  renderVals() {
+    const ap = this.state.ap;
+    return {
+      artProgStyle: {
+        position: 'fixed', top: 0, left: 0, height: '3px', width: (ap * 100) + '%',
+        background: '#ff5230', zIndex: 40, transition: 'width .1s linear',
+        boxShadow: '0 0 12px rgba(255,82,48,.7)'
+      },
+      artProgPct: Math.round(ap * 100) + '%',
+      tocItems: ['00 框架', '01 提需求', '02 需求文档', '03 设计与拆分', '04 Demo 与评审', '05 两份文档', '06 AI 落地', '07 验收', '08 上线与迭代', '三条纪律'].map((label, i) => {
+        const active = Math.min(9, Math.floor(ap * 10.001)) === i;
+        return {
+          label,
+          href: '#s' + i,
+          style: {
+            fontFamily: "'JetBrains Mono',monospace", fontSize: '11px', padding: '6px 0 6px 14px', display: 'block',
+            borderLeft: active ? '2px solid #ff5230' : '2px solid rgba(240,232,216,.07)',
+            color: active ? '#ff5230' : '#6f675a', transition: 'all .2s'
+          }
+        };
+      })
+    };
+  }
+}
+</script>
+<script>
+// Page-wide background: dot grid + warm spotlight that lights up the dots around the pointer,
+// plus a fading pointer trail. Plain DOM/canvas outside the dc/React tree so moves never re-render.
+(() => {
+  const WARM = '240,220,180';
+  const layer = (css) => {
+    const el = document.createElement('div');
+    el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:fixed;inset:0;z-index:-1;pointer-events:none;' + css;
+    document.body.appendChild(el);
+    return el;
+  };
+  const DOTS = 'background-size:26px 26px;background-position:13px 13px;';
+  layer(DOTS + 'background-image:radial-gradient(rgba(240,232,216,.07) 1px,transparent 1.3px)');
+
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!fine) return;
+
+  // pages without their own cursor (.cur-none) get the same blended dot as the home page
+  if (!document.querySelector('.cur-none')) {
+    const st = document.createElement('style');
+    st.textContent = 'html.xl-cur,html.xl-cur *{cursor:none!important}';
+    document.head.appendChild(st);
+    document.documentElement.classList.add('xl-cur');
+    const dot = document.createElement('div');
+    dot.setAttribute('aria-hidden', 'true');
+    dot.style.cssText = 'position:fixed;left:0;top:0;z-index:300;pointer-events:none;width:9px;height:9px;border-radius:99px;background:#f0dcb4;border:1.5px solid transparent;mix-blend-mode:difference;opacity:0;transform:translate(-50%,-50%);transition:width .18s,height .18s,background .18s,border-color .18s,opacity .25s';
+    document.body.appendChild(dot);
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      const big = !!(e.target.closest && e.target.closest('a,button,input,textarea,[role=button]'));
+      dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; dot.style.opacity = '1';
+      dot.style.width = dot.style.height = big ? '32px' : '9px';
+      dot.style.background = big ? 'transparent' : '#f0dcb4';
+      dot.style.borderColor = big ? '#f0dcb4' : 'transparent';
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { dot.style.opacity = '0'; });
+  }
+
+  const MASK = 'radial-gradient(circle 230px at var(--mx) var(--my),#000,rgba(0,0,0,.35) 55%,transparent 100%)';
+  const fade = 'opacity:0;transition:opacity .4s;';
+  const glow = layer(fade + 'background:radial-gradient(circle 460px at var(--mx) var(--my),rgba(' + WARM + ',.085),rgba(' + WARM + ',.03) 45%,transparent 75%)');
+  const lit = layer(fade + DOTS + 'background-image:radial-gradient(rgba(' + WARM + ',.6) 1.1px,transparent 1.5px);-webkit-mask-image:' + MASK + ';mask-image:' + MASK);
+  const setPos = (x, y) => {
+    for (const el of [glow, lit]) { el.style.setProperty('--mx', x + 'px'); el.style.setProperty('--my', y + 'px'); }
+  };
+  const show = (on) => { glow.style.opacity = lit.style.opacity = on ? '1' : '0'; };
+
+  let cv = null, ctx = null, w = 0, h = 0;
+  if (!still) {
+    cv = document.createElement('canvas');
+    cv.setAttribute('aria-hidden', 'true');
+    cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none';
+    document.body.appendChild(cv);
+    ctx = cv.getContext('2d');
+    const resize = () => {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      w = innerWidth; h = innerHeight;
+      cv.width = w * dpr; cv.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    addEventListener('resize', resize);
+  }
+
+  const TRAIL_MS = 520, SPARK_MS = 900;
+  const trail = [], sparks = [];
+  let raf = 0, last = null;
+
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const x = e.clientX, y = e.clientY;
+    setPos(x, y);
+    show(true);
+    if (!ctx) return;
+    const now = performance.now();
+    trail.push({ x, y, t: now });
+    if (last) {
+      const d = Math.hypot(x - last.x, y - last.y);
+      if (Math.random() < Math.min(d / 45, 0.7)) {
+        const a = Math.random() * Math.PI * 2, v = 0.2 + Math.random() * 0.6;
+        sparks.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.25, r: 0.8 + Math.random() * 1.6, t: now, hot: Math.random() < 0.18 });
+      }
+    }
+    last = { x, y };
+    if (!raf) raf = requestAnimationFrame(draw);
+  }, { passive: true });
+  document.documentElement.addEventListener('pointerleave', () => { last = null; show(false); });
+
+  function draw(now) {
+    ctx.clearRect(0, 0, w, h);
+    while (trail.length && now - trail[0].t > TRAIL_MS) trail.shift();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    // two passes: wide faint glow, then thin bright core
+    for (const [wMul, aMul] of [[4.5, 0.08], [1, 0.45]]) {
+      for (let i = 1; i < trail.length; i++) {
+        const a = trail[i - 1], b = trail[i];
+        const k = 1 - (now - b.t) / TRAIL_MS;
+        ctx.strokeStyle = 'rgba(' + WARM + ',' + (k * k * aMul).toFixed(3) + ')';
+        ctx.lineWidth = (0.6 + k * 2.6) * wMul;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i], k = 1 - (now - s.t) / SPARK_MS;
+      if (k <= 0) { sparks.splice(i, 1); continue; }
+      s.x += s.vx; s.y += s.vy; s.vx *= 0.97; s.vy = s.vy * 0.97 - 0.004;
+      ctx.fillStyle = s.hot ? 'rgba(255,82,48,' + (k * 0.7).toFixed(3) + ')' : 'rgba(' + WARM + ',' + (k * 0.6).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * (0.4 + k * 0.6), 0, Math.PI * 2); ctx.fill();
+    }
+    raf = (trail.length || sparks.length) ? requestAnimationFrame(draw) : 0;
+    if (!raf) ctx.clearRect(0, 0, w, h);
+  }
+})();
+</script>
+</body>
+</html>

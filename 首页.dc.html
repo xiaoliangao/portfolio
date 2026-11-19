@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
+<style>
+body{margin:0;background:#0d0b08;font-family:'Noto Sans SC',system-ui,sans-serif;color:#f0e8d8}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:.95}
+::selection{background:#ff5230;color:#0d0b08}
+.cur-none,.cur-none a,.cur-none input{cursor:none}
+[data-tilt]:hover .flip{transform:rotateY(180deg)}
+@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,158,107,.55)}50%{box-shadow:0 0 0 7px rgba(74,158,107,0)}}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+@keyframes rowFlashG{0%{background:rgba(74,158,107,.45)}100%{background:rgba(74,158,107,.13)}}
+@keyframes rowFlashO{0%{background:rgba(255,82,48,.5)}100%{background:rgba(255,82,48,.14)}}
+@media(max-width:820px){
+[style*="grid-template-columns:1fr 280px"]{grid-template-columns:1fr!important;gap:34px!important}
+[style*="font-size:118px"]{font-size:84px!important}
+[style*="width:280px;height:330px"]{width:240px!important;height:284px!important;margin:0 auto!important}
+[style*="display:flex;gap:28px;align-items:center"]{gap:16px!important;flex-wrap:wrap!important;justify-content:flex-end!important}
+[style*="width:540px;max-width:92vw"]{width:92vw!important}
+[data-tilt]{height:auto!important}
+[data-tilt] .flip{transform:none!important;height:auto!important}
+[data-tilt] .flip>div{position:relative!important;transform:none!important}
+[style*="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9a8f7c"]{display:none!important}
+}
+@media(max-width:560px){
+[style*="font-size:118px"]{font-size:62px!important}
+[style*="grid-template-columns:76px 24px 1fr"]{grid-template-columns:40px 16px 1fr!important}
+[style*="padding:64px 40px 56px"]{padding:30px 16px 34px!important}
+[style*="padding:22px 40px 0"]{padding:16px 16px 0!important}
+[style*="padding:10px 40px"]{padding:9px 13px!important}
+[style*="padding:0 40px 56px"]{padding:0 16px 40px!important}
+[style*="padding:20px 40px 24px"]{padding:18px 16px!important;flex-direction:column!important;gap:10px!important}
+[style*="display:flex;gap:28px;align-items:center"]{gap:11px!important;font-size:12px!important}
+[style*="font-size:25px"]{font-size:20px!important}
+[style*="padding:10px 40px"]{flex-wrap:wrap!important}
+[style*="padding:6px 0 24px"]{flex-wrap:wrap!important}
+}
+</style>
+</helmet>
+
+<div data-screen-label="首页" class="cur-none" onPointerMove="{{ curMove }}" onPointerLeave="{{ curLeave }}" style="position:relative;min-height:100vh;overflow:hidden">
+  <div style="{{ cursorDotStyle }}"></div>
+
+  <div onClick="{{ skipBoot }}" style="{{ bootStyle }}">
+    <sc-if value="{{ bootOn }}" hint-placeholder-val="{{ true }}">
+      <div style="width:540px;max-width:92vw">
+        <div style="display:flex;align-items:center;gap:7px;background:#1d1812;border:1px solid rgba(240,232,216,.16);border-bottom:none;border-radius:14px 14px 0 0;padding:11px 16px">
+          <span style="width:11px;height:11px;border-radius:99px;background:#ff5f57"></span><span style="width:11px;height:11px;border-radius:99px;background:#febc2e"></span><span style="width:11px;height:11px;border-radius:99px;background:#28c840"></span>
+          <span style="margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a8f7c">boot.ts — xiaoliangOS</span>
+          <span style="margin-left:auto;display:inline-block;font-size:15px;line-height:1;color:#ff5230;animation:spinSlow 2.4s linear infinite">✦</span>
+        </div>
+        <div style="background:#14100b;border:1px solid rgba(240,232,216,.16);border-top:none;border-radius:0 0 14px 14px;padding:18px 24px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:2.05;color:#f0e8d8">
+          {{ bootRows }}
+          <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+            <div style="flex:1;height:3px;background:rgba(240,232,216,.1);border-radius:99px;overflow:hidden"><div style="{{ bootBarStyle }}"></div></div>
+            <span style="font-size:11px;color:#9a8f7c;font-variant-numeric:tabular-nums;white-space:nowrap">{{ bootStatus }}</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="max-width:1160px;margin:0 auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 40px;border-bottom:1px solid rgba(240,232,216,.1);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:#9a8f7c">
+      <span>XIAOLIANG.HNYY.ONLINE</span>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span style="display:inline-flex;border:1px solid rgba(240,232,216,.2);border-radius:99px;overflow:hidden">
+          <a href="#top" onClick="{{ setZh }}" style="{{ zhChip }}">中</a>
+          <a href="#top" onClick="{{ setEn }}" style="{{ enChip }}">EN</a>
+        </span>
+        <a href="#top" onClick="{{ replayBoot }}" style="color:#9a8f7c;cursor:pointer;transition:color .15s;letter-spacing:.16em" style-hover="color:#ff5230">↻ BOOT</a>
+        <a href="#top" onClick="{{ clockToggle }}" style="color:#ff5230;cursor:pointer;transition:opacity .15s" style-hover="opacity:.7">{{ clockText }}</a>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:22px 40px 0">
+      <span style="font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:22px;font-weight:700">xiaoliang<span style="color:#ff5230">.</span></span>
+      <div style="display:flex;gap:28px;align-items:center;font-size:13px;color:#9a8f7c">
+        <a href="#timeline" style="transition:color .15s" style-hover="color:#f0e8d8"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ff5230">01</span> {{ nav1 }}</a>
+        <a href="留言墙.dc.html" style="transition:color .15s" style-hover="color:#f0e8d8"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ff5230">02</span> {{ nav2 }}</a>
+        <a href="简历CV.dc.html" style="transition:color .15s" style-hover="color:#f0e8d8"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ff5230">03</span> {{ nav3 }}</a>
+        <a href="mailto:eangyang0504@gmail.com" style="color:#0d0b08;background:#ff5230;border-radius:99px;padding:7px 18px;font-weight:700;transition:all .15s" style-hover="background:#f0e8d8">联系 →</a>
+      </div>
+    </div>
+
+    <div style="position:relative;overflow:hidden;padding:64px 40px 56px">
+      <div style="position:relative;display:grid;grid-template-columns:1fr 280px;gap:48px;align-items:center">
+        <div>
+          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:118px;font-weight:700;line-height:.92;letter-spacing:-.02em;color:rgba(240,232,216,.07);-webkit-text-stroke:1.5px #f0e8d8"><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-4deg);color:#ff5230">X</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(3deg);color:#ff5230">I</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-3deg);color:#ff5230">A</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(4deg);color:#ff5230">O</span><br><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-4deg);color:#ff5230">L</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(3deg);color:#ff5230">I</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-3deg);color:#ff5230">A</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(4deg);color:#ff5230">N</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-3deg);color:#ff5230">G</span></h1>
+          <sc-if value="{{ isZh }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:32px 0 0;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:25px">把一闪而过，做成<span style="color:#ff5230;border-bottom:2px solid #ff5230;padding-bottom:1px">一直在</span>。</p>
+            <p style="margin:14px 0 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9a8f7c">全栈开发者 · 做能真正跑起来的 AI 应用</p>
+          </sc-if>
+          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:32px 0 0;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:25px">Make the fleeting <span style="color:#ff5230;border-bottom:2px solid #ff5230;padding-bottom:1px">stay</span>.</p>
+            <p style="margin:14px 0 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9a8f7c">FULL-STACK · AI APPS THAT ACTUALLY SHIP</p>
+          </sc-if>
+        </div>
+        <div onPointerEnter="{{ nowOn }}" onPointerLeave="{{ nowOff }}" style="position:relative;width:280px;height:330px">
+          <span style="position:absolute;inset:0;border-radius:150px 150px 22px 22px;border:1.5px solid rgba(255,82,48,.6);transform:translate(14px,14px);pointer-events:none"></span>
+          <div style="position:absolute;inset:0;border-radius:150px 150px 22px 22px;overflow:hidden;border:1.5px solid rgba(240,232,216,.25);background:#14100b">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-avatar" shape="rect" fit="cover" placeholder="拖你的头像到这里" hint-size="280px,330px" style="position:absolute;inset:0"></x-import>
+          </div>
+          <span style="position:absolute;top:-26px;right:-26px;display:grid;place-items:center;pointer-events:none"><span style="font-size:54px;line-height:1;color:#ff5230;animation:spinSlow 12s linear infinite;text-shadow:0 0 26px rgba(255,82,48,.55)">✦</span></span>
+          <div style="{{ nowBubbleStyle }}">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:#ff5230;margin-bottom:10px">此刻 · NOW</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#c9c0ad;text-align:left">
+              <span><span style="font-family:'JetBrains Mono',monospace;color:#9a8f7c">做 →</span> 一个新 App</span>
+              <span><span style="font-family:'JetBrains Mono',monospace;color:#9a8f7c">听 →</span> Umbrella</span>
+              <span><span style="font-family:'JetBrains Mono',monospace;color:#9a8f7c">读 →</span> 《JavaAgent开发》</span>
+            </div>
+          </div>
+          <a href="#top" onClick="{{ nowToggle }}" style="position:absolute;left:50%;bottom:-19px;transform:translateX(-50%);white-space:nowrap;display:inline-flex;align-items:center;gap:9px;background:#14100b;border:1px solid rgba(240,232,216,.22);border-radius:99px;padding:8px 16px;font-size:12px;color:#c9c0ad;box-shadow:0 14px 34px rgba(0,0,0,.55);cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(255,82,48,.6)"><span style="width:7px;height:7px;border-radius:99px;background:#4a9e6b;animation:pulse 2s ease-in-out infinite"></span>{{ pillText }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="timeline" style="padding:0 40px 56px">
+      <div style="display:flex;align-items:baseline;gap:18px;padding:6px 0 24px;border-top:1px solid rgba(240,232,216,.1)">
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:46px;font-weight:700;color:#ff5230">2026</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:#9a8f7c">{{ tlHeader }}</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:76px 24px 1fr;row-gap:0">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:24px;font-variant-numeric:tabular-nums">11-07</span>
+        <span style="position:relative"><span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:30px;width:10px;height:10px;border-radius:99px;background:#0d0b08;border:2px solid #ff5230;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,82,48,.6)"></span></span>
+        <a href="随笔-Vibe-Coding开发流程.dc.html" style="display:block;margin:0 0 20px 16px;background:#14100b;border:1px solid rgba(240,232,216,.13);border-radius:14px;padding:26px 30px;transition:transform .22s,box-shadow .22s,border-color .22s;transform-origin:left center" style-hover="transform:translateY(-4px) scale(1.015);box-shadow:0 24px 50px rgba(0,0,0,.6);border-color:rgba(255,82,48,.55)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;border:1px solid rgba(240,232,216,.28);border-radius:99px;padding:3px 11px;color:#c9c0ad">随笔</span>
+            <span style="color:#ff5230;font-size:17px">↗</span>
+          </div>
+          <div style="margin-top:14px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700;line-height:1.6">一个人怎么做一个产品：Vibe Coding 的完整开发流程</div>
+          <div style="margin-top:10px;font-size:12px;color:#9a8f7c;font-family:'JetBrains Mono',monospace;letter-spacing:.06em">约 15 分钟 · Vibe Coding / AI 开发 / 方法论</div>
+        </a>
+
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:24px;font-variant-numeric:tabular-nums">07-12</span>
+        <span style="position:relative"><span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:30px;width:10px;height:10px;border-radius:99px;background:#0d0b08;border:2px solid #ff5230;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,82,48,.6)"></span></span>
+        <a href="随笔-开发流程.dc.html" style="display:block;margin:0 0 20px 16px;background:#14100b;border:1px solid rgba(240,232,216,.13);border-radius:14px;padding:26px 30px;transition:transform .22s,box-shadow .22s,border-color .22s;transform-origin:left center" style-hover="transform:translateY(-4px) scale(1.015);box-shadow:0 24px 50px rgba(0,0,0,.6);border-color:rgba(255,82,48,.55)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;border:1px solid rgba(240,232,216,.28);border-radius:99px;padding:3px 11px;color:#c9c0ad">随笔</span>
+            <span style="color:#ff5230;font-size:17px">↗</span>
+          </div>
+          <div style="margin-top:14px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700;line-height:1.6">一个软件项目是怎么从想法走到上线的：完整的公司级开发流程</div>
+          <div style="margin-top:10px;font-size:12px;color:#9a8f7c;font-family:'JetBrains Mono',monospace;letter-spacing:.06em">约 15 分钟 · 项目管理 / 开发流程 / 方法论</div>
+        </a>
+
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:24px">{{ d2 }}</span>
+        <span style="position:relative"><span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:30px;width:10px;height:10px;border-radius:99px;background:#ff5230;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,82,48,.6)"></span></span>
+        <div data-tilt="2" onPointerEnter="{{ projEnter }}" onPointerLeave="{{ projLeave }}" style="margin:0 0 20px 16px;perspective:1400px;height:252px">
+          <div style="{{ tilt2Style }}">
+          <div class="flip" style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.2,.7,.2,1)">
+            <div style="position:absolute;inset:0;backface-visibility:hidden;background:#14100b;border:1.5px solid rgba(240,232,216,.28);border-radius:14px;padding:26px 30px;display:flex;flex-direction:column;overflow:hidden">
+              <span style="position:absolute;right:14px;bottom:-28px;font-family:'Space Grotesk',sans-serif;font-size:130px;font-weight:700;color:rgba(240,232,216,.05);line-height:1;pointer-events:none">01</span>
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;background:#ff5230;color:#0d0b08;border-radius:99px;padding:3px 11px;font-weight:700">运行中</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a8f7c">研究追踪 RAG 系统</span></div>
+              <span style="margin-top:16px;font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700">TaskRAG</span>
+              <span style="margin-top:8px;font-size:14.5px;line-height:1.8;color:#c9c0ad;max-width:520px">每天替你读完 arXiv、HuggingFace、GitHub 的更新，按课题归档。你问，它带着出处答。</span>
+              <span style="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9a8f7c">悬停翻面 ↻ 技术栈 / 链接</span>
+            </div>
+            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#f0e8d8;color:#0d0b08;border-radius:14px;padding:26px 30px;display:flex;flex-direction:column">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700">TaskRAG</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:#ff5230">RAG · 带引用问答</span></div>
+              <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">React</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">TypeScript</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">FastAPI</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">Qdrant</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">Celery</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">Docker</span>
+              </div>
+              <div style="margin-top:auto;display:flex;gap:12px">
+                <a href="https://taskrag.hnyy.online" target="_blank" style="font-size:13px;font-weight:700;background:#0d0b08;color:#f0e8d8;border-radius:99px;padding:9px 20px" style-hover="opacity:.85">在线体验 ↗</a>
+                <a href="https://github.com/xiaoliangao/taskRag" target="_blank" style="font-size:13px;font-weight:700;border:1.5px solid rgba(13,11,8,.4);color:#0d0b08;border-radius:99px;padding:9px 20px" style-hover="background:rgba(13,11,8,.08)">源码</a>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:16px">now</span>
+        <span style="position:relative"><span style="position:absolute;left:50%;top:0;height:22px;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:22px;width:10px;height:10px;border-radius:99px;background:#0d0b08;border:2px dashed #9a8f7c;transform:translateX(-50%)"></span></span>
+        <div style="padding:16px 0 0 30px;color:#9a8f7c;font-size:13.5px;font-family:'JetBrains Mono',monospace">{{ nowText }}<span style="display:inline-block;width:8px;height:1em;background:#ff5230;vertical-align:-2px;margin-left:6px;animation:blink 1.1s steps(1) infinite"></span></div>
+      </div>
+    </div>
+
+    <a href="mailto:eangyang0504@gmail.com" onClick="{{ mqClick }}" onPointerEnter="{{ mqEnter }}" onPointerLeave="{{ mqLeave }}" style="display:block;overflow:hidden;background:#ff5230;color:#0d0b08;transition:filter .2s" style-hover="filter:brightness(1.08)">
+      <div style="{{ mqStyle }}">
+        <span>一起做点有趣的事 ✦ GITHUB ✦ EANGYANG0504@GMAIL.COM ✦ CV ✦&nbsp;</span>
+        <span>一起做点有趣的事 ✦ GITHUB ✦ EANGYANG0504@GMAIL.COM ✦ CV ✦&nbsp;</span>
+      </div>
+    </a>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 40px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a8f7c">
+      <span>© 2026 xiaoliang · Built with care</span>
+      <div style="display:flex;gap:18px">
+        <a href="https://github.com/xiaoliangao" target="_blank" style="transition:color .15s" style-hover="color:#ff5230">GitHub</a>
+        <a href="mailto:eangyang0504@gmail.com" style="transition:color .15s" style-hover="color:#ff5230">Email</a>
+        <a href="留言墙.dc.html" style="transition:color .15s" style-hover="color:#ff5230">留言墙</a>
+        <a href="简历CV.dc.html" style="transition:color .15s" style-hover="color:#ff5230">CV</a>
+        <a href="404.dc.html" style="transition:color .15s" style-hover="color:#ff5230">404</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const BOOT_C = { k: '#ff5230', s: '#4a9e6b', f: '#e5c07b', c: '#544c3e' };
+// [text, colorKey]; `pause` = extra typing units spent after the line (a beat on the OK / RUNNING lines)
+const BOOT_LINES = [
+  { tokens: [['import', 'k'], [' { xiaoliang } '], ['from', 'k'], [' '], ["'./2026'", 's']], pause: 6 },
+  { tokens: [['const', 'k'], [' site = '], ['await', 'k'], [' '], ['build', 'f'], ['({ 有趣: '], ['true', 'k'], [' })']], badge: ['OK', 'g'], pause: 18 },
+  { tokens: [['site.'], ['mount', 'f'], ['('], ["'timeline'", 's'], [')']], pause: 6 },
+  { tokens: [['site.'], ['mount', 'f'], ['('], ["'guestbook'", 's'], [')']], pause: 6 },
+  { tokens: [['site.'], ['listen', 'f'], ['('], ['443', 's'], [') '], ['// ✦ 一直在', 'c']], badge: ['RUNNING', 'o'], pause: 18 },
+  { tokens: [['export default xiaoliang', 'c']], pause: 0 }
+];
+const BOOT_OFFSETS = [];
+let BOOT_UNITS = 0;
+for (const l of BOOT_LINES) {
+  l.len = l.tokens.reduce((n, t) => n + t[0].length, 0);
+  BOOT_OFFSETS.push(BOOT_UNITS);
+  BOOT_UNITS += l.len + l.pause;
+}
+const BOOT_TYPE_MS = 1700;
+const BOOT_PHASES = ['resolving', 'building', 'mounting timeline', 'mounting guestbook', 'listening :443', 'exporting'];
+
+class Component extends DCLogic {
+  state = {
+    lang: 'zh',
+    boot: true, bootTyped: 0, bootP: 0, bootMs: 0,
+    t: '',
+    clockMode: 'time',
+    cur: { x: 0, y: 0, big: false, on: false },
+    nowOpen: false,
+    tilt1: { rx: 0, ry: 0 },
+    tilt2: { rx: 0, ry: 0 },
+    hovP: 0,
+    mqHover: false,
+    mqLock: false
+  };
+
+  componentDidMount() {
+    const tick = () => {
+      const d = new Date();
+      const p = (n) => String(n).padStart(2, '0');
+      this.setState({ t: p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) });
+    };
+    tick();
+    this._tick = setInterval(tick, 1000);
+    // progress only reaches 100% once fonts + page assets are really loaded (capped at 4s)
+    this._assetsReady = false;
+    const loaded = document.readyState === 'complete' ? null : new Promise((r) => addEventListener('load', r, { once: true }));
+    Promise.race([
+      Promise.all([document.fonts ? document.fonts.ready : null, loaded]),
+      new Promise((r) => setTimeout(r, 4000))
+    ]).then(() => { this._assetsReady = true; });
+    let booted = false;
+    try { booted = sessionStorage.getItem('xl-booted') === '1'; } catch (_) {}
+    if (booted) this.setState({ boot: false });
+    else this.startBoot();
+  }
+  componentWillUnmount() { clearInterval(this._tick); clearTimeout(this._bt); cancelAnimationFrame(this._raf); }
+
+  startBoot() {
+    cancelAnimationFrame(this._raf);
+    clearTimeout(this._bt);
+    const t0 = performance.now();
+    let shown = 0;
+    const step = (now) => {
+      const el = now - t0;
+      const typed = Math.min(BOOT_UNITS, (el / BOOT_TYPE_MS) * BOOT_UNITS);
+      const target = Math.min(typed / BOOT_UNITS, this._assetsReady ? 1 : 0.92);
+      shown += (target - shown) * 0.14;
+      if (target - shown < 0.003) shown = target;
+      if (shown >= 1) {
+        this.setState({ boot: true, bootTyped: BOOT_UNITS, bootP: 1, bootMs: el });
+        this._bt = setTimeout(this.finishBoot, 700);
+        return;
+      }
+      this.setState({ boot: true, bootTyped: typed, bootP: shown, bootMs: 0 });
+      this._raf = requestAnimationFrame(step);
+    };
+    this.setState({ boot: true, bootTyped: 0, bootP: 0, bootMs: 0 });
+    this._raf = requestAnimationFrame(step);
+  }
+  finishBoot = () => {
+    cancelAnimationFrame(this._raf);
+    clearTimeout(this._bt);
+    this.setState({ boot: false });
+    try { sessionStorage.setItem('xl-booted', '1'); } catch (_) {}
+  };
+  skipBoot = () => { if (this.state.boot) this.finishBoot(); };
+
+  bootRows() {
+    const h = React.createElement;
+    const typed = this.state.bootTyped;
+    const rowBase = { display: 'flex', alignItems: 'center', padding: '1px 10px', margin: '0 -10px', borderRadius: '6px', minHeight: '1.9em' };
+    const rows = [];
+    let cursorPlaced = false;
+    BOOT_LINES.forEach((line, i) => {
+      const n = Math.floor(typed - BOOT_OFFSETS[i]);
+      if (n < 0) return;
+      const done = n >= line.len;
+      let left = Math.min(n, line.len);
+      const spans = [];
+      line.tokens.forEach(([txt, c], j) => {
+        if (left <= 0) return;
+        const part = txt.slice(0, left);
+        left -= part.length;
+        spans.push(h('span', { key: j, style: c ? { color: BOOT_C[c] } : null }, part));
+      });
+      if (!done && !cursorPlaced) {
+        cursorPlaced = true;
+        spans.push(h('span', { key: 'cur', style: { display: 'inline-block', width: '7px', height: '1.05em', background: '#ff5230', verticalAlign: '-2px', marginLeft: '1px' } }));
+      }
+      const flash = done && line.badge ? (line.badge[1] === 'g' ? 'rowFlashG .8s both' : 'rowFlashO .8s both') : 'none';
+      rows.push(h('div', { key: i, style: { ...rowBase, animation: flash } },
+        h('span', { style: { width: '24px', flex: 'none', color: '#544c3e' } }, i + 1),
+        h('span', { style: { flex: 1 } }, spans),
+        done && line.badge ? h('span', { style: { flex: 'none', fontSize: '9.5px', letterSpacing: '.14em', fontWeight: 700, color: line.badge[1] === 'g' ? '#4a9e6b' : '#ff5230' } }, line.badge[0]) : null
+      ));
+    });
+    if (this.state.bootMs) {
+      const ok = (t) => [h('span', { key: t, style: { color: '#4a9e6b' } }, '✓ '), t, '\u00a0\u00a0'];
+      rows.push(h('div', { key: 'ok', style: { fontSize: '11.5px', color: '#9a8f7c', marginTop: '10px' } },
+        ok('timeline mounted'), ok('运行中 ×2'), ok('随笔 ×2'), ok('guestbook'),
+        h('span', { style: { color: '#544c3e' } }, 'ready in ' + (this.state.bootMs / 1000).toFixed(2) + 's')));
+    }
+    return rows;
+  }
+
+  setZh = (e) => { e.preventDefault(); this.setState({ lang: 'zh' }); };
+  setEn = (e) => { e.preventDefault(); this.setState({ lang: 'en' }); };
+  replayBoot = (e) => {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    this.startBoot();
+  };
+  clockToggle = (e) => { e.preventDefault(); this.setState({ clockMode: this.state.clockMode === 'time' ? 'uptime' : 'time' }); };
+  curMove = (e) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const big = !!(e.target && e.target.closest && e.target.closest('a,input'));
+    this.setState({ cur: { x: e.clientX - r.left, y: e.clientY - r.top, big, on: true } });
+  };
+  curLeave = () => { this.setState({ cur: { ...this.state.cur, on: false } }); };
+  nowToggle = (e) => { e.preventDefault(); this.setState({ nowOpen: !this.state.nowOpen }); };
+  nowOn = () => { this.setState({ nowOpen: true }); };
+  nowOff = () => { this.setState({ nowOpen: false }); };
+  mqEnter = () => { this.setState({ mqHover: true }); };
+  mqLeave = () => { this.setState({ mqHover: false }); };
+  mqClick = (e) => { e.preventDefault(); this.setState({ mqLock: !this.state.mqLock }); };
+  tiltMove = (e) => {
+    const k = e.currentTarget.getAttribute('data-tilt');
+    const r = e.currentTarget.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    this.setState({ ['tilt' + k]: { rx: -py * 7, ry: px * 9 }, hovP: k });
+  };
+  tiltLeave = (e) => {
+    const k = e.currentTarget.getAttribute('data-tilt');
+    this.setState({ ['tilt' + k]: { rx: 0, ry: 0 }, hovP: 0 });
+  };
+  projEnter = (e) => { this.setState({ hovP: e.currentTarget.getAttribute('data-tilt') }); };
+  projLeave = () => { this.setState({ hovP: 0 }); };
+  tiltStyle(k) {
+    return { width: '100%', height: '100%', transformStyle: 'preserve-3d' };
+  }
+
+  renderVals() {
+    const zh = this.state.lang === 'zh';
+    const chip = (on) => ({
+      fontFamily: "'JetBrains Mono',monospace", fontSize: '10.5px', padding: '4px 11px', cursor: 'pointer',
+      background: on ? '#ff5230' : 'transparent', color: on ? '#0d0b08' : '#9a8f7c', fontWeight: 700
+    });
+    return {
+      isZh: zh,
+      isEn: !zh,
+      nav1: zh ? '近况' : 'Now',
+      nav2: zh ? '留言墙' : 'Guestbook',
+      nav3: zh ? '简历 CV' : 'Résumé',
+      pillText: zh ? '在做一个新 App' : 'Building a new app',
+      tlHeader: zh ? 'TIMELINE — 运行中 ×2 · 随笔 ×2' : 'TIMELINE — 2 RUNNING · 2 NOTES',
+      nowText: zh ? '下一站：一个 App，编译中' : 'next stop: an app, compiling',
+      setZh: this.setZh,
+      setEn: this.setEn,
+      zhChip: chip(zh),
+      enChip: chip(!zh),
+      replayBoot: this.replayBoot,
+      skipBoot: this.skipBoot,
+      bootOn: this.state.boot,
+      bootRows: this.state.boot ? this.bootRows() : null,
+      bootBarStyle: {
+        width: (this.state.bootP * 100).toFixed(2) + '%', height: '100%', background: '#ff5230',
+        boxShadow: '0 0 10px rgba(255,82,48,.8)'
+      },
+      bootStatus: this.state.bootMs ? 'ready ✦' : (() => {
+        let li = 0;
+        while (li < BOOT_LINES.length - 1 && this.state.bootTyped >= BOOT_OFFSETS[li + 1]) li++;
+        const phase = this.state.bootTyped >= BOOT_UNITS ? 'loading assets' : BOOT_PHASES[li];
+        return String(Math.floor(this.state.bootP * 100)).padStart(3, '\u2007') + '% · ' + phase;
+      })(),
+      bootStyle: {
+        position: 'fixed', inset: 0, zIndex: 200, background: '#0d0b08',
+        display: 'grid', placeItems: 'center', transition: 'opacity .5s',
+        opacity: this.state.boot ? 1 : 0,
+        pointerEvents: this.state.boot ? 'auto' : 'none'
+      },
+      clockToggle: this.clockToggle,
+      clockText: this.state.clockMode === 'time'
+        ? (this.state.t || '00:00:00')
+        : '已运行 ' + Math.floor((Date.now() - new Date('2024-07-01').getTime()) / 86400000) + ' 天',
+      curMove: this.curMove,
+      curLeave: this.curLeave,
+      cursorDotStyle: {
+        position: 'absolute', left: this.state.cur.x + 'px', top: this.state.cur.y + 'px', zIndex: 300,
+        pointerEvents: 'none', transform: 'translate(-50%,-50%)',
+        width: (this.state.cur.big ? 32 : 9) + 'px', height: (this.state.cur.big ? 32 : 9) + 'px',
+        borderRadius: '99px',
+        background: this.state.cur.big ? 'transparent' : '#f0dcb4',
+        border: this.state.cur.big ? '1.5px solid #f0dcb4' : 'none',
+        mixBlendMode: 'difference',
+        opacity: this.state.cur.on ? 1 : 0,
+        transition: 'width .18s, height .18s, background .18s, border .18s, opacity .25s'
+      },
+      nowToggle: this.nowToggle,
+      nowOn: this.nowOn,
+      nowOff: this.nowOff,
+      nowBubbleStyle: {
+        position: 'absolute', left: '50%', bottom: '32px', zIndex: 30, width: '250px',
+        transform: 'translateX(-50%) ' + (this.state.nowOpen ? 'translateY(0) scale(1)' : 'translateY(8px) scale(.92)'),
+        opacity: this.state.nowOpen ? 1 : 0,
+        pointerEvents: this.state.nowOpen ? 'auto' : 'none',
+        background: '#14100b', border: '1px solid rgba(240,232,216,.22)', borderRadius: '14px',
+        padding: '16px 18px', boxShadow: '0 22px 54px rgba(0,0,0,.65)',
+        transition: 'all .22s cubic-bezier(.2,.7,.3,1.2)'
+      },
+      mqEnter: this.mqEnter, mqLeave: this.mqLeave, mqClick: this.mqClick,
+      mqStyle: {
+        display: 'inline-flex', whiteSpace: 'nowrap',
+        animation: 'marquee 14s linear infinite',
+        animationPlayState: (this.state.mqHover || this.state.mqLock) ? 'paused' : 'running',
+        fontFamily: "'JetBrains Mono',monospace", fontSize: '12.5px', fontWeight: 700,
+        letterSpacing: '.22em', padding: '9px 0'
+      },
+      tiltMove: this.tiltMove, tiltLeave: this.tiltLeave,
+      projEnter: this.projEnter, projLeave: this.projLeave,
+      tilt1Style: this.tiltStyle(1),
+      tilt2Style: this.tiltStyle(2),
+      d1: this.state.hovP === '1' ? '06-08' : '运行中',
+      d2: this.state.hovP === '2' ? '05-18' : '运行中'
+    };
+  }
+}
+</script>
+<script>
+// Page-wide background: dot grid + warm spotlight that lights up the dots around the pointer,
+// plus a fading pointer trail. Plain DOM/canvas outside the dc/React tree so moves never re-render.
+(() => {
+  const WARM = '240,220,180';
+  const layer = (css) => {
+    const el = document.createElement('div');
+    el.setAttribute('aria-hidden', 'true');
+    el.style.cssText = 'position:fixed;inset:0;z-index:-1;pointer-events:none;' + css;
+    document.body.appendChild(el);
+    return el;
+  };
+  const DOTS = 'background-size:26px 26px;background-position:13px 13px;';
+  layer(DOTS + 'background-image:radial-gradient(rgba(240,232,216,.07) 1px,transparent 1.3px)');
+
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!fine) return;
+
+  // pages without their own cursor (.cur-none) get the same blended dot as the home page
+  if (!document.querySelector('.cur-none')) {
+    const st = document.createElement('style');
+    st.textContent = 'html.xl-cur,html.xl-cur *{cursor:none!important}';
+    document.head.appendChild(st);
+    document.documentElement.classList.add('xl-cur');
+    const dot = document.createElement('div');
+    dot.setAttribute('aria-hidden', 'true');
+    dot.style.cssText = 'position:fixed;left:0;top:0;z-index:300;pointer-events:none;width:9px;height:9px;border-radius:99px;background:#f0dcb4;border:1.5px solid transparent;mix-blend-mode:difference;opacity:0;transform:translate(-50%,-50%);transition:width .18s,height .18s,background .18s,border-color .18s,opacity .25s';
+    document.body.appendChild(dot);
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      const big = !!(e.target.closest && e.target.closest('a,button,input,textarea,[role=button]'));
+      dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; dot.style.opacity = '1';
+      dot.style.width = dot.style.height = big ? '32px' : '9px';
+      dot.style.background = big ? 'transparent' : '#f0dcb4';
+      dot.style.borderColor = big ? '#f0dcb4' : 'transparent';
+    }, { passive: true });
+    document.documentElement.addEventListener('pointerleave', () => { dot.style.opacity = '0'; });
+  }
+
+  const MASK = 'radial-gradient(circle 230px at var(--mx) var(--my),#000,rgba(0,0,0,.35) 55%,transparent 100%)';
+  const fade = 'opacity:0;transition:opacity .4s;';
+  const glow = layer(fade + 'background:radial-gradient(circle 460px at var(--mx) var(--my),rgba(' + WARM + ',.085),rgba(' + WARM + ',.03) 45%,transparent 75%)');
+  const lit = layer(fade + DOTS + 'background-image:radial-gradient(rgba(' + WARM + ',.6) 1.1px,transparent 1.5px);-webkit-mask-image:' + MASK + ';mask-image:' + MASK);
+  const setPos = (x, y) => {
+    for (const el of [glow, lit]) { el.style.setProperty('--mx', x + 'px'); el.style.setProperty('--my', y + 'px'); }
+  };
+  const show = (on) => { glow.style.opacity = lit.style.opacity = on ? '1' : '0'; };
+
+  let cv = null, ctx = null, w = 0, h = 0;
+  if (!still) {
+    cv = document.createElement('canvas');
+    cv.setAttribute('aria-hidden', 'true');
+    cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none';
+    document.body.appendChild(cv);
+    ctx = cv.getContext('2d');
+    const resize = () => {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      w = innerWidth; h = innerHeight;
+      cv.width = w * dpr; cv.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    addEventListener('resize', resize);
+  }
+
+  const TRAIL_MS = 520, SPARK_MS = 900;
+  const trail = [], sparks = [];
+  let raf = 0, last = null;
+
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const x = e.clientX, y = e.clientY;
+    setPos(x, y);
+    show(true);
+    if (!ctx) return;
+    const now = performance.now();
+    trail.push({ x, y, t: now });
+    if (last) {
+      const d = Math.hypot(x - last.x, y - last.y);
+      if (Math.random() < Math.min(d / 45, 0.7)) {
+        const a = Math.random() * Math.PI * 2, v = 0.2 + Math.random() * 0.6;
+        sparks.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.25, r: 0.8 + Math.random() * 1.6, t: now, hot: Math.random() < 0.18 });
+      }
+    }
+    last = { x, y };
+    if (!raf) raf = requestAnimationFrame(draw);
+  }, { passive: true });
+  document.documentElement.addEventListener('pointerleave', () => { last = null; show(false); });
+
+  function draw(now) {
+    ctx.clearRect(0, 0, w, h);
+    while (trail.length && now - trail[0].t > TRAIL_MS) trail.shift();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    // two passes: wide faint glow, then thin bright core
+    for (const [wMul, aMul] of [[4.5, 0.08], [1, 0.45]]) {
+      for (let i = 1; i < trail.length; i++) {
+        const a = trail[i - 1], b = trail[i];
+        const k = 1 - (now - b.t) / TRAIL_MS;
+        ctx.strokeStyle = 'rgba(' + WARM + ',' + (k * k * aMul).toFixed(3) + ')';
+        ctx.lineWidth = (0.6 + k * 2.6) * wMul;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+    }
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i], k = 1 - (now - s.t) / SPARK_MS;
+      if (k <= 0) { sparks.splice(i, 1); continue; }
+      s.x += s.vx; s.y += s.vy; s.vx *= 0.97; s.vy = s.vy * 0.97 - 0.004;
+      ctx.fillStyle = s.hot ? 'rgba(255,82,48,' + (k * 0.7).toFixed(3) + ')' : 'rgba(' + WARM + ',' + (k * 0.6).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * (0.4 + k * 0.6), 0, Math.PI * 2); ctx.fill();
+    }
+    raf = (trail.length || sparks.length) ? requestAnimationFrame(draw) : 0;
+    if (!raf) ctx.clearRect(0, 0, w, h);
+  }
+})();
+</script>
+</body>
+</html>
