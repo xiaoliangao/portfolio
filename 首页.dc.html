@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <title>Liang (xiaoliang) — AI 应用开发 · 个人主页与简历</title>
+  <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml" />
+  <title>Xiao Liang (xiaoliang) — AI 应用开发 · 个人主页与简历</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Serif+SC:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -214,22 +214,93 @@
       min-height: calc(100vh - 156px);
     }
 
-    /* Bespoke Architectural Identity Badge */
-    .identity-emblem {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background: #18181b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(17, 24, 39, 0.10);
+    /* Avatar: EANG — the Muse plush, typing on a laptop (transparent cutout, mint disc) */
+    .avatar-char {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      position: relative;
       cursor: pointer;
-      transition: transform 0.28s var(--ease), box-shadow 0.28s ease;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.14);
+      animation: char-bob 3.6s ease-in-out infinite;
     }
-    .identity-emblem:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(17, 24, 39, 0.16);
+    .avatar-char::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .avatar-char img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      animation: typing 1.8s ease-in-out infinite;
+    }
+    .avatar-char:hover { animation-play-state: paused; }
+    @keyframes char-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    @keyframes typing {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-12px) rotate(-2deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(-12px) rotate(2deg); }
+    }
+    .avatar-char .type-char {
+      position: absolute;
+      z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      opacity: 0;
+      pointer-events: none;
+      animation: type-float 4s ease-out infinite;
+    }
+    .avatar-char .type-char.t1 { left: 90px; bottom: 34px; animation-delay: 0s; }
+    .avatar-char .type-char.t2 { left: 96px; bottom: 34px; animation-delay: 1.33s; }
+    .avatar-char .type-char.t3 { left: 92px; bottom: 34px; animation-delay: 2.66s; }
+    @keyframes type-float {
+      0% { transform: translateY(0) scale(0.4); opacity: 0; }
+      8% { transform: translateY(-8px) scale(1.25); opacity: 1; }
+      20% { transform: translateY(-20px) scale(1); opacity: 1; }
+      70% { opacity: 1; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
+    }
+    .avatar-char.excited { animation: char-pop 0.8s ease; }
+    @keyframes char-pop {
+      0% { transform: scale(1) translateY(0); }
+      30% { transform: scale(0.94, 1.06) translateY(2px); }
+      60% { transform: scale(1.2, 0.9) translateY(-12px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+    .avatar-char .burst-note {
+      position: absolute;
+      z-index: 2;
+      font-size: 22px;
+      color: #d4a017;
+      pointer-events: none;
+      animation: burst-up 2.2s ease-out forwards;
+      font-family: Georgia, 'Times New Roman', serif;
+      text-shadow: 0 1px 6px rgba(212, 160, 23, 0.45);
+    }
+    @keyframes burst-up {
+      0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-60px) scale(1.2) rotate(20deg); opacity: 0; }
+    }
+    @media (max-width: 860px) {
+      .avatar-char { width: 140px; height: 140px; }
+      .avatar-char .type-char { font-size: 20px; }
+      .avatar-char .type-char.t1 { left: 70px; bottom: 26px; }
+      .avatar-char .type-char.t2 { left: 75px; bottom: 26px; }
+      .avatar-char .type-char.t3 { left: 72px; bottom: 26px; }
     }
 
     .left-name {
@@ -314,14 +385,6 @@
     .snav-btn:hover .snav-line,
     .snav-btn.active .snav-line { width: 44px; background: var(--ink); }
 
-    .left-cta-block {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-
     .primary-pill {
       display: inline-flex;
       align-items: center;
@@ -339,13 +402,34 @@
       transition: transform 0.2s var(--ease), background 0.2s ease;
     }
     .primary-pill:hover { background: #27272a; transform: translateY(-1px); }
-
-    .inline-links {
+    .contact-group {
+      display: inline-flex;
+      align-items: stretch;
+      width: fit-content;
+      border-radius: 999px;
+      background: var(--charcoal);
+      box-shadow: 0 4px 12px rgba(24, 24, 27, 0.12);
+      overflow: hidden;
+    }
+    .contact-seg {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      padding: 9px 16px;
+      color: #ffffff;
       font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.2s ease;
     }
+    .contact-seg:hover { background: #27272a; }
+    .contact-div { width: 1px; background: rgba(255, 255, 255, 0.28); margin: 9px 0; }
+
 
     .clean-link {
       color: var(--ink2);
@@ -719,15 +803,73 @@
       font-size: 14px;
       color: var(--ink2);
     }
-    .seal-cta {
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--mute);
-      background: none;
-      border: none;
-      cursor: pointer;
+    @media (max-width: 860px) {
+      .site-footer { flex-direction: column; align-items: stretch; }
     }
-    .seal-cta:hover { color: var(--ink); }
+
+    /* Git activity view (dock tab) — light editorial style, full-year heatmap */
+    .git-page { padding: 8px 0 30px; }
+    .git-h {
+      font-family: var(--font-heading);
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 10px 0 8px;
+    }
+    .git-updated { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--mute); margin-bottom: 4px; }
+    .git-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .git-stat {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px 12px;
+      background: #fcfcfa;
+    }
+    .git-stat-n { font-family: var(--font-heading); font-size: 26px; font-weight: 600; }
+    .git-stat-l { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; color: var(--mute); margin-top: 2px; }
+    .git-cal-wrap { overflow-x: auto; padding-bottom: 4px; }
+    .git-cal { display: inline-flex; gap: 10px; }
+    .git-cal-days { position: relative; width: 24px; flex: none; font-family: var(--font-mono); font-size: 9.5px; color: var(--mute); }
+    .git-cal-days span { position: absolute; left: 0; }
+    .git-cal-days span:nth-child(1) { top: 37px; }
+    .git-cal-days span:nth-child(2) { top: 71px; }
+    .git-cal-days span:nth-child(3) { top: 105px; }
+    .git-cal-main { display: flex; flex-direction: column; gap: 4px; }
+    .git-cal-months { position: relative; height: 14px; font-family: var(--font-mono); font-size: 10px; color: var(--mute); }
+    .git-cal-months span { position: absolute; top: 0; }
+    .git-cal-grid { display: grid; grid-template-rows: repeat(7, 14px); grid-auto-flow: column; grid-auto-columns: 14px; gap: 3px; }
+    .git-cell { width: 14px; height: 14px; border-radius: 3px; background: #eef2f7; border: none; padding: 0; cursor: pointer; }
+    .git-cell.c1 { background: #a7f3d0; }
+    .git-cell.c2 { background: #6ee7b7; }
+    .git-cell.c3 { background: #34d399; }
+    .git-cell.c4 { background: #059669; }
+    .git-cell.sel { outline: 2px solid #d4a017; outline-offset: 1px; }
+    .git-legend { display: flex; align-items: center; justify-content: flex-end; gap: 5px; font-family: var(--font-mono); font-size: 10.5px; color: var(--mute); margin-top: 10px; }
+    .git-legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; border: 1px solid var(--border); }
+    .git-day { margin: 12px 0 4px; font-size: 13px; color: var(--ink2); }
+    .git-clear { margin-left: 8px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: #fff; font-size: 12px; cursor: pointer; color: var(--ink2); }
+    .git-filters { display: flex; gap: 6px; margin: 16px 0 8px; flex-wrap: wrap; }
+    .git-filter { padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border); background: transparent; font-size: 12.5px; cursor: pointer; color: var(--ink2); }
+    .git-filter.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+    .git-day-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--mute); margin: 18px 0 6px; }
+    .git-item { display: flex; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--border); font-size: 13.5px; align-items: baseline; }
+    .git-item-time { font-family: var(--font-mono); font-size: 11.5px; color: var(--mute); flex: none; width: 44px; }
+    .git-item-msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+    .git-item-msg a { color: inherit; text-decoration: none; }
+    .git-item-msg a:hover { text-decoration: underline; }
+    .git-repo { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink2); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; flex: none; }
+    .git-more { margin-top: 16px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 13px; }
+    .git-more:hover { border-color: var(--ink); }
+    .git-note { margin-top: 18px; font-size: 12px; color: var(--mute); }
+    .git-empty { padding: 26px 0; color: var(--mute); font-size: 13.5px; }
+    @media (max-width: 860px) {
+      .git-stats { grid-template-columns: repeat(2, 1fr); }
+      .git-h { font-size: 25px; }
+    }
 
     /* Bottom Floating Capsule Dock */
     .dock-wrap {
@@ -969,16 +1111,15 @@
         <!-- Sticky Left Identity Column -->
         <aside class="split-left">
           <div>
-            <!-- Bespoke Architectural XL Emblem -->
-            <div class="identity-emblem" id="emblemBtn" title="点击轻推背景微粒">
-              <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                <path d="M9 8.5V23.5H20" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M15.5 8.5L22.5 15.5" stroke="rgba(255,255,255,0.45)" stroke-width="1.6" stroke-linecap="round" />
-                <circle cx="22.5" cy="21" r="3" fill="#EF4444" />
-              </svg>
+            <!-- Avatar: EANG, the Muse plush — typing on a laptop -->
+            <div class="avatar-char" id="emblemBtn" title="点一点，EANG 跟你打招呼">
+              <span class="type-char t1" aria-hidden="true">&lt;</span>
+              <span class="type-char t2" aria-hidden="true">/</span>
+              <span class="type-char t3" aria-hidden="true">;</span>
+              <img src="avatar-eang.png?v=4" alt="EANG：戴着耳机的毛绒玩偶，正在敲电脑" />
             </div>
 
-            <h2 class="left-name">肖亮 · Liang</h2>
+            <h2 class="left-name">Xiao Liang</h2>
             <div class="left-sub" id="leftSub">CS MASTER'S · AI ENGINEERING</div>
             <p class="left-role" id="leftRole">
               全栈开发者，写代码，也写字。专注 AI 应用开发与 Agent 工程。
@@ -996,17 +1137,6 @@
             <button class="snav-btn" type="button" data-scroll="sec-proj"><span class="snav-line"></span> 03 PROJECTS</button>
             <button class="snav-btn" type="button" data-scroll="sec-writing"><span class="snav-line"></span> 04 WRITING</button>
           </nav>
-
-          <div class="left-cta-block">
-            <button class="primary-pill" id="copyEmailBtn" type="button">复制联系邮箱</button>
-            <div class="inline-links">
-              <a class="clean-link" href="https://github.com/xiaoliangao" target="_blank" rel="noopener">GitHub ↗</a>
-              <span class="pipe-sep" aria-hidden="true"></span>
-              <button class="clean-link" type="button" data-nav="resume">纸质简历</button>
-              <span class="pipe-sep" aria-hidden="true"></span>
-              <button class="clean-link" type="button" data-nav="guestbook">留言墙</button>
-            </div>
-          </div>
         </aside>
 
         <!-- Right Scrollable Content Column -->
@@ -1017,7 +1147,7 @@
               把一闪而过，做成<em>一直在</em>。
             </h1>
             <p class="body-p" id="heroP1">
-              你好，我是<strong>肖亮（Liang）</strong>，全栈开发者，写代码，也写字。目前主攻 <strong>AI 应用开发</strong>：2026 年在杭州灵医科技独立落地了企业级 RAG 知识库问答系统，之后一个人做完了 TaskRAG，从架构、编码、测试到部署运维全程独立完成。
+              你好，我是<strong>Xiao Liang</strong>，全栈开发者，写代码，也写字。目前主攻 <strong>AI 应用开发</strong>：2026 年在杭州灵医科技独立落地了企业级 RAG 知识库问答系统，之后一个人做完了 TaskRAG，从架构、编码、测试到部署运维全程独立完成。
             </p>
             <p class="body-p" id="heroP2">
               相比停留在演示阶段的概念 Demo，我更在意模型在真实场景里的稳定性：怎么降低幻觉、怎么缩短首字响应、怎么让普通用户不用学复杂指令也能顺畅用起来。目前正在寻找 <strong>AI 应用研发相关的实习与校招机会</strong>，下面是我近期的作品与技术复盘。
@@ -1028,7 +1158,7 @@
           <section class="right-sec" id="sec-exp">
             <div class="sec-bar">
               <div class="sec-label">02 · EXPERIENCE &amp; EDUCATION</div>
-              <div class="sec-sub">履历</div>
+              <div class="sec-sub" id="secSubExp">履历</div>
             </div>
             <div class="dim-list" id="expList"></div>
           </section>
@@ -1037,12 +1167,12 @@
           <section class="right-sec" id="sec-proj">
             <div class="sec-bar">
               <div class="sec-label">03 · SELECTED PROJECTS</div>
-              <div class="sec-sub">作品</div>
+              <div class="sec-sub" id="secSubProj">作品</div>
             </div>
             <div class="filter-row" id="projFilter">
-              <button class="flt-btn active" type="button" data-filter="all">全部</button>
-              <button class="flt-btn" type="button" data-filter="ai">AI 应用</button>
-              <button class="flt-btn" type="button" data-filter="web">Web 工程</button>
+              <button class="flt-btn active" type="button" data-filter="all" id="fltAll">全部</button>
+              <button class="flt-btn" type="button" data-filter="ai" id="fltAi">AI 应用</button>
+              <button class="flt-btn" type="button" data-filter="web" id="fltWeb">Web 工程</button>
             </div>
             <div class="dim-list" id="projList"></div>
           </section>
@@ -1051,7 +1181,7 @@
           <section class="right-sec" id="sec-writing" style="margin-bottom: 20px;">
             <div class="sec-bar">
               <div class="sec-label">04 · NOTES &amp; ESSAYS</div>
-              <div class="sec-sub">随笔</div>
+              <div class="sec-sub" id="secSubWriting">随笔</div>
             </div>
             <div class="writing-index" id="writingIndex"></div>
           </section>
@@ -1063,13 +1193,13 @@
     <section id="view-guestbook" class="view">
       <div class="gb-layout">
         <form class="gb-form" id="gbForm">
-          <div class="sec-label" style="margin-bottom: 8px;">GUESTBOOK · 留言墙</div>
+          <div class="sec-label" style="margin-bottom: 8px;" id="gbSecLabel">GUESTBOOK · 留言墙</div>
           <p class="item-desc" style="margin-bottom: 16px;" id="gbIntro">
             路过，留个爪印。匿名也行，会一直留着。
           </p>
-          <label class="f-label" for="gbName">称呼 / NAME</label>
+          <label class="f-label" for="gbName" id="gbNameLabel">称呼 / NAME</label>
           <input class="f-input" id="gbName" type="text" placeholder="名字（可空）" maxlength="24" autocomplete="nickname" />
-          <label class="f-label" for="gbMsg">内容 / MESSAGE</label>
+          <label class="f-label" for="gbMsg" id="gbMsgLabel">内容 / MESSAGE</label>
           <textarea class="f-area" id="gbMsg" rows="3" placeholder="想说的话 …（回车发送，Shift+回车换行）" maxlength="300"></textarea>
           <button class="f-submit" type="submit" id="gbSubmitBtn">落印留言</button>
           <div class="hp-field" aria-hidden="true">
@@ -1105,9 +1235,48 @@
       </div>
     </section>
 
+    <!-- VIEW 4: GIT ACTIVITY -->
+    <section id="view-git" class="view">
+      <div class="git-page">
+        <div class="sec-label">GIT · GITHUB</div>
+        <h2 class="git-h" id="gitH">最近提交的代码。</h2>
+        <div class="git-updated" id="gitUpdated">LATEST · —</div>
+        <p class="item-desc" id="gitSub">公开仓库过去一年的提交动态：lingmao 与 portfolio 两个仓库，按天分组。</p>
+        <div class="git-stats">
+          <div class="git-stat"><div class="git-stat-n" id="gsCommits">–</div><div class="git-stat-l" id="gsCommitsL">提交 COMMITS</div></div>
+          <div class="git-stat"><div class="git-stat-n" id="gsDays">–</div><div class="git-stat-l" id="gsDaysL">活跃天数 ACTIVE DAYS</div></div>
+          <div class="git-stat"><div class="git-stat-n" id="gsStreak">–</div><div class="git-stat-l" id="gsStreakL">最长连击 LONGEST STREAK</div></div>
+          <div class="git-stat"><div class="git-stat-n" id="gsBusy">–</div><div class="git-stat-l" id="gsBusyL">最忙一天 BUSIEST DAY</div></div>
+        </div>
+        <div class="git-cal-wrap">
+          <div class="git-cal">
+            <div class="git-cal-days" aria-hidden="true"><span>Mon</span><span>Wed</span><span>Fri</span></div>
+            <div class="git-cal-main">
+              <div class="git-cal-months" id="gitCalMonths"></div>
+              <div class="git-cal-grid" id="gitCalGrid"></div>
+            </div>
+          </div>
+        </div>
+        <div class="git-legend"><span>Less</span><i style="background:#eef2f7"></i><i style="background:#a7f3d0"></i><i style="background:#6ee7b7"></i><i style="background:#34d399"></i><i style="background:#059669"></i><span>More</span></div>
+        <div class="git-day" id="gitDay" hidden></div>
+        <div class="git-filters" id="gitFilters">
+          <button class="git-filter active" type="button" data-repo="all" id="gitFilterAll">全部</button>
+          <button class="git-filter" type="button" data-repo="lingmao">lingmao</button>
+          <button class="git-filter" type="button" data-repo="portfolio">portfolio</button>
+        </div>
+        <div class="git-timeline" id="gitTimeline"><div class="git-empty">正在拉取 GitHub 数据…</div></div>
+        <button class="git-more" id="gitMore" type="button" hidden>显示更多</button>
+        <p class="git-note" id="gitNote">仅统计公开提交 · 点击日期格子可按天筛选 · 数据来自 GitHub API</p>
+      </div>
+    </section>
+
     <footer class="site-footer">
-      <div class="footer-motto" id="footerMotto">“带着离开的决心，只为更好的归来。” · © 2026 Liang</div>
-      <button class="seal-cta" id="sealHintBtn" type="button">点击空白处可落「Liang」印章</button>
+      <div class="footer-motto" id="footerMotto">“带着离开的决心，只为更好的归来。” · © 2026 Xiao Liang</div>
+      <div class="contact-group">
+        <button class="contact-seg" id="copyEmailBtn" type="button">复制联系邮箱</button>
+        <span class="contact-div" aria-hidden="true"></span>
+        <a class="contact-seg" href="https://github.com/xiaoliangao" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
     </footer>
   </div>
 
@@ -1117,6 +1286,7 @@
       <button class="dock-btn active" type="button" data-nav="home" id="dock-home">首页</button>
       <button class="dock-btn" type="button" data-nav="guestbook" id="dock-guestbook">留言墙</button>
       <button class="dock-btn" type="button" data-nav="resume" id="dock-resume">简历</button>
+      <button class="dock-btn" type="button" data-nav="git" id="dock-git">Git</button>
     </nav>
     <button class="sound-btn" id="soundBtn" type="button" title="播放 / 暂停《天空之城》" aria-label="Play or pause Castle in the Sky">
       <span class="sound-bars">
@@ -1133,15 +1303,16 @@
   <div class="cmd-bg" id="cmdModal" role="dialog" aria-modal="true" aria-label="Command Palette">
     <div class="cmd-box">
       <div class="cmd-head">
-        <span>快捷导航 · QUICK JUMP</span>
+        <span id="cmdHead">快捷导航 · QUICK JUMP</span>
         <span>ESC</span>
       </div>
       <div class="cmd-list">
-        <button class="cmd-item" type="button" data-cmd="resume"><span>打开纸质简历（支持导出 PDF）</span><span class="cmd-key">R</span></button>
-        <button class="cmd-item" type="button" data-cmd="music"><span>播放 / 暂停《天空之城》</span><span class="cmd-key">M</span></button>
-        <button class="cmd-item" type="button" data-cmd="guestbook"><span>前往留言墙</span><span class="cmd-key">G</span></button>
-        <button class="cmd-item" type="button" data-cmd="seal"><span>在页面落一枚「Liang」印章</span><span class="cmd-key">S</span></button>
-        <button class="cmd-item" type="button" data-cmd="email"><span>复制联系邮箱</span><span class="cmd-key">C</span></button>
+        <button class="cmd-item" type="button" data-cmd="resume"><span id="cmdResume">打开纸质简历（支持导出 PDF）</span><span class="cmd-key">R</span></button>
+        <button class="cmd-item" type="button" data-cmd="music"><span id="cmdMusic">播放 / 暂停《天空之城》</span><span class="cmd-key">M</span></button>
+        <button class="cmd-item" type="button" data-cmd="guestbook"><span id="cmdGuestbook">前往留言墙</span><span class="cmd-key">G</span></button>
+        <button class="cmd-item" type="button" data-cmd="git"><span id="cmdGit">查看 Git 提交动态</span><span class="cmd-key">T</span></button>
+        <button class="cmd-item" type="button" data-cmd="seal"><span id="cmdSeal">在页面落一枚「Liang」印章</span><span class="cmd-key">S</span></button>
+        <button class="cmd-item" type="button" data-cmd="email"><span id="cmdEmail">复制联系邮箱</span><span class="cmd-key">C</span></button>
       </div>
     </div>
   </div>
@@ -1176,7 +1347,8 @@
 
       const experiences = [
         {
-          date: '2026.03 — 06',
+          dateZh: '2026.03 — 06',
+          dateEn: 'Mar – Jun 2026',
           titleZh: 'AI 应用开发实习生 · 杭州灵医科技',
           titleEn: 'AI Application Engineering Intern · Lingyi Technology, Hangzhou',
           descZh: '独立设计并落地企业级 RAG 知识库问答系统：离线索引 + 在线查询双管道，混合检索 + RRF 融合 + Reranker 精排 + SSE 流式生成。标准问题集 Hit Rate 72%→87%，引用溯源 Faithfulness 0.68→0.91。',
@@ -1184,7 +1356,8 @@
           tags: ['RAG', 'RRF', 'Reranker', 'SSE', 'Python']
         },
         {
-          date: '2026.06 — 至今',
+          dateZh: '2026.06 — 至今',
+          dateEn: 'Jun 2026 — Present',
           titleZh: '独立开发 · 个人项目',
           titleEn: 'Independent Developer · Personal Projects',
           descZh: '一个人做完线上产品 TaskRAG：从架构、编码、测试到 Docker + Nginx + HTTPS 部署运维，全程独立完成；现在在做一个新 App。',
@@ -1254,7 +1427,7 @@
         try {
           res = await fetch(url, { cache: 'no-store', ...opts, headers: { Accept: 'application/json', ...(opts && opts.headers) } });
         } catch (_) {
-          return { ok: false, status: 0, data: { message: '网络好像断了，稍后再试' } };
+          return { ok: false, status: 0, data: { message: state.lang === 'zh' ? '网络好像断了，稍后再试' : 'Network error — please try again later' } };
         }
         let data = null;
         try { data = await res.json(); } catch (_) {}
@@ -1268,10 +1441,11 @@
         const full = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
         const sec = Math.max(0, (now - d.getTime()) / 1000);
         let rel;
-        if (sec < 60) rel = '刚刚';
-        else if (sec < 3600) rel = Math.floor(sec / 60) + ' 分钟前';
-        else if (sec < 86400) rel = Math.floor(sec / 3600) + ' 小时前';
-        else if (sec < 7 * 86400) rel = Math.floor(sec / 86400) + ' 天前';
+        const isZh = state.lang === 'zh';
+        if (sec < 60) rel = isZh ? '刚刚' : 'just now';
+        else if (sec < 3600) rel = Math.floor(sec / 60) + (isZh ? ' 分钟前' : ' min ago');
+        else if (sec < 86400) rel = Math.floor(sec / 3600) + (isZh ? ' 小时前' : ' h ago');
+        else if (sec < 7 * 86400) rel = Math.floor(sec / 86400) + (isZh ? ' 天前' : ' d ago');
         else if (d.getFullYear() === new Date(now).getFullYear()) rel = p(d.getMonth() + 1) + '-' + p(d.getDate());
         else rel = full.slice(0, 10);
         return { d: rel, full };
@@ -1280,9 +1454,10 @@
       function gbStatusLine() {
         const el = document.getElementById('gbStatus');
         if (!el) return;
-        if (gbLoading && !gbList.length) { el.textContent = '加载中 …'; el.style.cursor = ''; el.onclick = null; }
-        else if (gbList.length === 0) { el.textContent = '还没有人留言，第一条留给你'; el.style.cursor = ''; el.onclick = null; }
-        else { el.textContent = '共 ' + (gbTotal == null ? gbList.length : gbTotal) + ' 条'; el.style.cursor = ''; el.onclick = null; }
+        const isZh = state.lang === 'zh';
+        if (gbLoading && !gbList.length) { el.textContent = isZh ? '加载中 …' : 'Loading…'; el.style.cursor = ''; el.onclick = null; }
+        else if (gbList.length === 0) { el.textContent = isZh ? '还没有人留言，第一条留给你' : 'No messages yet — be the first'; el.style.cursor = ''; el.onclick = null; }
+        else { el.textContent = isZh ? '共 ' + (gbTotal == null ? gbList.length : gbTotal) + ' 条' : (gbTotal == null ? gbList.length : gbTotal) + ' messages'; el.style.cursor = ''; el.onclick = null; }
       }
 
       async function gbLoad(more) {
@@ -1294,7 +1469,7 @@
         if (!r.ok || !Array.isArray(r.data.items)) {
           gbLoading = false; gbLoadingMore = false;
           const el = document.getElementById('gbStatus');
-          if (el) { el.textContent = '留言加载失败 · 点这里重试'; el.style.cursor = 'pointer'; el.onclick = () => gbLoad(false); }
+          if (el) { el.textContent = state.lang === 'zh' ? '留言加载失败 · 点这里重试' : 'Failed to load messages · Click to retry'; el.style.cursor = 'pointer'; el.onclick = () => gbLoad(false); }
           return;
         }
         const cur = more ? gbList : [];
@@ -1797,7 +1972,7 @@
         const isZh = state.lang === 'zh';
         document.getElementById('expList').innerHTML = experiences.map(ex => `
           <article class="dim-item">
-            <div class="item-date">${ex.date}</div>
+            <div class="item-date">${(isZh ? ex.dateZh : ex.dateEn) || ex.date || ''}</div>
             <div>
               <div class="item-title">${isZh ? ex.titleZh : ex.titleEn}</div>
               <p class="item-desc">${isZh ? ex.descZh : ex.descEn}</p>
@@ -1848,7 +2023,7 @@
           const w = gbWhen(m.created_at, now);
           return `
           <div class="stamp-card">
-            <span class="stamp-tag">${esc(m.name || '匿名')}</span>
+            <span class="stamp-tag">${esc(m.name || (state.lang === 'zh' ? '匿名' : 'Anonymous'))}</span>
             <p style="font-size:13.5px; line-height:1.65; color:var(--ink2); margin-bottom:8px; white-space:pre-wrap; overflow-wrap:anywhere;">${esc(m.content)}</p>
             <div style="font-family:var(--font-mono); font-size:10.5px; color:var(--mute);" title="${esc(w.full)}">${esc(w.d)}</div>
           </div>`;
@@ -1870,7 +2045,7 @@
           body.innerHTML = isZh ? `
             <div class="p-head">
               <div>
-                <div class="p-name">肖亮 · Liang</div>
+                <div class="p-name">Xiao Liang</div>
                 <div class="p-role">AI 应用开发 · 全栈开发者，写代码，也写字。</div>
               </div>
               <div class="p-contact">eangyang0504@gmail.com<br/>github.com/xiaoliangao<br/>xiaoliang.hnyy.online</div>
@@ -1894,7 +2069,7 @@
           ` : `
             <div class="p-head">
               <div>
-                <div class="p-name">Liang (xiaoliang)</div>
+                <div class="p-name">Xiao Liang (xiaoliang)</div>
                 <div class="p-role">Full-Stack Developer · AI Application Engineering</div>
               </div>
               <div class="p-contact">eangyang0504@gmail.com<br/>github.com/xiaoliangao<br/>xiaoliang.hnyy.online</div>
@@ -1920,7 +2095,7 @@
           body.innerHTML = isZh ? `
             <div class="p-head">
               <div>
-                <div class="p-name" style="font-size:26px;">肖亮 · 代表项目与技能</div>
+                <div class="p-name" style="font-size:26px;">Xiao Liang · 代表项目与技能</div>
                 <div class="p-role">Page 2 · Projects &amp; Technical Stack</div>
               </div>
               <div class="p-contact">xiaoliang.hnyy.online</div>
@@ -1943,7 +2118,7 @@
           ` : `
             <div class="p-head">
               <div>
-                <div class="p-name" style="font-size:26px;">Liang — Projects &amp; Stack</div>
+                <div class="p-name" style="font-size:26px;">Xiao Liang — Projects &amp; Stack</div>
                 <div class="p-role">Page 2 · Selected Work &amp; Technical Skills</div>
               </div>
               <div class="p-contact">xiaoliang.hnyy.online</div>
@@ -1979,7 +2154,7 @@
           ? '把一闪而过，做成<em>一直在</em>。'
           : 'Make the fleeting <em>stay</em>.';
         document.getElementById('heroP1').innerHTML = isZh
-          ? '你好，我是<strong>肖亮（Liang）</strong>，全栈开发者，写代码，也写字。目前主攻 <strong>AI 应用开发</strong>：2026 年在杭州灵医科技独立落地了企业级 RAG 知识库问答系统，之后一个人做完了 TaskRAG，从架构、编码、测试到部署运维全程独立完成。'
+          ? '你好，我是<strong>Xiao Liang</strong>，全栈开发者，写代码，也写字。目前主攻 <strong>AI 应用开发</strong>：2026 年在杭州灵医科技独立落地了企业级 RAG 知识库问答系统，之后一个人做完了 TaskRAG，从架构、编码、测试到部署运维全程独立完成。'
           : 'Hi, I’m <strong>Liang</strong>, a full-stack developer who also writes. I work on <strong>AI applications</strong>: in 2026 I shipped an enterprise RAG knowledge-base Q&A system as an intern at Lingyi Technology (Hangzhou), then built TaskRAG end to end on my own — architecture, code, tests, and deployment.';
         document.getElementById('heroP2').innerHTML = isZh
           ? '相比停留在演示阶段的概念 Demo，我更在意模型在真实场景里的稳定性：怎么降低幻觉、怎么缩短首字响应、怎么让普通用户不用学复杂指令也能顺畅用起来。目前正在寻找 <strong>AI 应用研发相关的实习与校招机会</strong>，下面是我近期的作品与技术复盘。'
@@ -1988,14 +2163,43 @@
         document.getElementById('dock-home').textContent = isZh ? '首页' : 'Home';
         document.getElementById('dock-guestbook').textContent = isZh ? '留言墙' : 'Guestbook';
         document.getElementById('dock-resume').textContent = isZh ? '简历' : 'Resume';
+        document.getElementById('dock-git').textContent = 'Git';
         document.getElementById('soundLabel').textContent = isZh ? '天空之城' : 'Laputa';
         document.getElementById('copyEmailBtn').textContent = isZh ? '复制联系邮箱' : 'Copy Email';
+        document.getElementById('emblemBtn').title = isZh ? '点一点，EANG 跟你打招呼' : 'Tap to say hi to EANG';
+        document.getElementById('cmdBtn').title = isZh ? '快捷导航' : 'Quick navigation';
+        document.getElementById('soundBtn').title = isZh ? '播放 / 暂停《天空之城》' : 'Play / pause Castle in the Sky';
+        document.getElementById('pageCurlBtn').title = isZh ? '点击右下角折页翻面' : 'Click the folded corner to flip the page';
+        document.getElementById('clearSealsBtn').textContent = isZh ? '清除印迹' : 'Clear seals';
+        document.getElementById('resPrintBtn').textContent = isZh ? '打印 / 导出 PDF' : 'Print / Export PDF';
+        document.getElementById('gbIntro').textContent = isZh
+          ? '欢迎交流技术问题、项目建议或工作机会，也可以随手留一枚脚印。'
+          : 'Tech questions, project ideas, or job opportunities — or just leave a footprint.';
+        document.getElementById('gbName').placeholder = isZh ? '怎么称呼你' : 'Your name';
+        document.getElementById('gbMsg').placeholder = isZh ? '写下一句留言...' : 'Write a message…';
+        document.getElementById('gbSubmitBtn').textContent = isZh ? '落印留言' : 'Stamp it';
+        document.getElementById('cmdResume').textContent = isZh ? '打开纸质简历（支持导出 PDF）' : 'Open paper resume (export PDF)';
+        document.getElementById('cmdMusic').textContent = isZh ? '播放 / 暂停《天空之城》' : 'Play / pause Castle in the Sky';
+        document.getElementById('cmdGuestbook').textContent = isZh ? '前往留言墙' : 'Go to guestbook';
+        document.getElementById('cmdGit').textContent = isZh ? '查看 Git 提交动态' : 'View Git activity';
+        document.getElementById('cmdSeal').textContent = isZh ? '在页面落一枚「Liang」印章' : 'Stamp a 「Liang」 seal on the page';
+        document.getElementById('cmdEmail').textContent = isZh ? '复制联系邮箱' : 'Copy contact email';
+        document.getElementById('secSubExp').textContent = isZh ? '履历' : 'Résumé';
+        document.getElementById('secSubProj').textContent = isZh ? '作品' : 'Works';
+        document.getElementById('secSubWriting').textContent = isZh ? '随笔' : 'Notes';
+        document.getElementById('fltAll').textContent = isZh ? '全部' : 'All';
+        document.getElementById('fltAi').textContent = isZh ? 'AI 应用' : 'AI Apps';
+        document.getElementById('fltWeb').textContent = isZh ? 'Web 工程' : 'Web';
+        document.getElementById('gbSecLabel').textContent = isZh ? 'GUESTBOOK · 留言墙' : 'GUESTBOOK';
+        document.getElementById('gbNameLabel').textContent = isZh ? '称呼 / NAME' : 'NAME';
+        document.getElementById('gbMsgLabel').textContent = isZh ? '内容 / MESSAGE' : 'MESSAGE';
+        document.getElementById('cmdHead').textContent = isZh ? '快捷导航 · QUICK JUMP' : 'QUICK JUMP';
+        document.querySelector('#emblemBtn img').alt = isZh ? 'EANG：戴着耳机的毛绒玩偶，正在敲电脑' : 'EANG: a plush in headphones, typing on a laptop';
+        if (typeof gbStatusLine === 'function') { gbStatusLine(); renderStamps(); }
+        syncGitUI();
         document.getElementById('footerMotto').textContent = isZh
-          ? '“带着离开的决心，只为更好的归来。” · © 2026 Liang'
-          : '“Depart with resolve, return with better work.” · © 2026 Liang';
-        document.getElementById('sealHintBtn').textContent = isZh
-          ? '点击空白处可落「Liang」印章'
-          : 'Tap empty space to stamp "Liang"';
+          ? '“带着离开的决心，只为更好的归来。” · © 2026 Xiao Liang'
+          : '“Depart with resolve, return with better work.” · © 2026 Xiao Liang';
 
         renderExperience();
         renderProjects();
@@ -2007,6 +2211,7 @@
         state.view = v;
         document.querySelectorAll('.view').forEach(el => el.classList.toggle('active', el.id === 'view-' + v));
         document.querySelectorAll('.dock-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === v));
+        if (v === 'git') gitFetch();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
@@ -2056,15 +2261,33 @@
 
       canvas.addEventListener('pointerdown', (e) => placeSeal(e.clientX, e.clientY));
 
-      document.getElementById('sealHintBtn').addEventListener('click', () => {
-        placeSeal(cw * (0.3 + Math.random() * 0.4), ch * (0.25 + Math.random() * 0.45));
-      });
       document.getElementById('clearSealsBtn').addEventListener('click', clearSeals);
 
       document.getElementById('emblemBtn').addEventListener('click', (e) => {
         const r = e.currentTarget.getBoundingClientRect();
         triggerGentleRipple(r.left + r.width / 2, r.top + r.height / 2);
       });
+
+      /* ---- Avatar: click to say hi (EANG photo badge) ---- */
+      (function () {
+        var avatar = document.getElementById('emblemBtn');
+        if (!avatar) return;
+        avatar.addEventListener('click', function () {
+          avatar.classList.remove('excited');
+          void avatar.offsetWidth;
+          avatar.classList.add('excited');
+          setTimeout(function () { avatar.classList.remove('excited'); }, 850);
+          ['✦', '✦', '✦'].forEach(function (ch, i) {
+            var s = document.createElement('span');
+            s.className = 'burst-note';
+            s.textContent = ch;
+            s.style.left = (42 + i * 42 + Math.random() * 8) + 'px';
+            s.style.top = '18px';
+            avatar.appendChild(s);
+            setTimeout(function () { s.remove(); }, 2300);
+          });
+        });
+      })();
 
       document.getElementById('brandBtn').addEventListener('click', () => switchView('home'));
       document.getElementById('cmdBtn').addEventListener('click', () => toggleCmd(true));
@@ -2107,6 +2330,7 @@
         else if (cmd === 'seal') placeSeal(cw * (0.3 + Math.random() * 0.4), ch * (0.25 + Math.random() * 0.45));
         else if (cmd === 'resume') switchView('resume');
         else if (cmd === 'guestbook') switchView('guestbook');
+        else if (cmd === 'git') switchView('git');
         else if (cmd === 'email') copyEmail();
       });
 
@@ -2134,9 +2358,9 @@
         const text = m.value.trim();
         const msgEl = document.getElementById('gbFormMsg');
         const setMsg = (t, err) => { if (msgEl) { msgEl.textContent = t; msgEl.style.color = err ? '#d9381a' : '#059669'; } };
-        if (!text) return setMsg('留言内容不能为空', true);
-        if (gbLen(name) > GB_NAME_MAX) return setMsg('名字最多 ' + GB_NAME_MAX + ' 个字', true);
-        if (gbLen(text) > GB_TEXT_MAX) return setMsg('留言最多 ' + GB_TEXT_MAX + ' 个字', true);
+        if (!text) return setMsg(state.lang === 'zh' ? '留言内容不能为空' : 'Message cannot be empty', true);
+        if (gbLen(name) > GB_NAME_MAX) return setMsg(state.lang === 'zh' ? '名字最多 ' + GB_NAME_MAX + ' 个字' : 'Name must be ' + GB_NAME_MAX + ' characters or fewer', true);
+        if (gbLen(text) > GB_TEXT_MAX) return setMsg(state.lang === 'zh' ? '留言最多 ' + GB_TEXT_MAX + ' 个字' : 'Message must be ' + GB_TEXT_MAX + ' characters or fewer', true);
         gbPosting = true;
         setMsg('', false);
         const r = await gbFetch(GB_API, {
@@ -2146,7 +2370,7 @@
         });
         gbPosting = false;
         if (!r.ok || !r.data.item) {
-          setMsg(r.data.message || (r.status === 429 ? '发得太快了，稍后再试' : '没贴上去，稍后再试'), true);
+          setMsg(r.data.message || (r.status === 429 ? (state.lang === 'zh' ? '发得太快了，稍后再试' : 'Too fast — please try again shortly') : (state.lang === 'zh' ? '没贴上去，稍后再试' : "Couldn't post — please try again")), true);
           return;
         }
         try { localStorage.setItem('xl-gb-name', name); } catch (err) {}
@@ -2157,7 +2381,7 @@
         updateGbCount();
         renderStamps();
         playStampSound();
-        setMsg('贴好了', false);
+        setMsg(state.lang === 'zh' ? '贴好了' : 'Posted', false);
         toast(state.lang === 'zh' ? '留言已落印' : 'Message stamped');
       });
 
@@ -2203,6 +2427,202 @@
           toggleCmd(false);
         }
       });
+
+      /* ---- Git activity view (dock tab) ---- */
+      var gitState = { loaded: false, loading: false, commits: [], repo: 'all', day: null, shown: 15 };
+      var GIT_FALLBACK = [{ sha: '6ae88f5', url: 'https://github.com/xiaoliangao/portfolio/commit/6ae88f5', msg: 'Redesign: light editorial style, original content; drop .dc framework', date: new Date('2026-11-22T10:54:55Z'), repo: 'portfolio' }];
+      function gitDayKey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+      function gitRel(iso) {
+        var s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+        var isZh = state.lang === 'zh';
+        if (s < 3600) return Math.max(1, Math.floor(s / 60)) + (isZh ? ' 分钟前' : ' min ago');
+        if (s < 86400) return Math.floor(s / 3600) + (isZh ? ' 小时前' : ' h ago');
+        return Math.floor(s / 86400) + (isZh ? ' 天前' : ' d ago');
+      }
+      function gitEsc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+      var GIT_MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      var GIT_WD_ZH = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      var GIT_WD_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      function gitMonthLabel(m) { return state.lang === 'zh' ? (m + 1) + '月' : GIT_MONTHS_EN[m]; }
+      function gitWD(d) { return state.lang === 'zh' ? GIT_WD_ZH[d] : GIT_WD_EN[d]; }
+      function gitDayTitle(m, day, n) {
+        if (state.lang === 'zh') return (m + 1) + '月' + day + '日 · ' + n + ' 次提交';
+        return GIT_MONTHS_EN[m] + ' ' + day + ' · ' + n + (n === 1 ? ' commit' : ' commits');
+      }
+      function syncGitUI() {
+        var isZh = state.lang === 'zh';
+        document.getElementById('gitH').textContent = isZh ? '最近提交的代码。' : 'Code I shipped recently.';
+        document.getElementById('gitSub').textContent = isZh
+          ? '公开仓库过去一年的提交动态：lingmao 与 portfolio 两个仓库，按天分组。'
+          : 'Public commits from the past year across lingmao and portfolio, grouped by day.';
+        document.getElementById('gsCommitsL').textContent = isZh ? '提交 COMMITS' : 'COMMITS';
+        document.getElementById('gsDaysL').textContent = isZh ? '活跃天数 ACTIVE DAYS' : 'ACTIVE DAYS';
+        document.getElementById('gsStreakL').textContent = isZh ? '最长连击 LONGEST STREAK' : 'LONGEST STREAK';
+        document.getElementById('gsBusyL').textContent = isZh ? '最忙一天 BUSIEST DAY' : 'BUSIEST DAY';
+        document.getElementById('gitFilterAll').textContent = isZh ? '全部' : 'All';
+        document.getElementById('gitMore').textContent = isZh ? '显示更多' : 'Show more';
+        if (gitState.loaded) {
+          document.getElementById('gitNote').textContent = gitState.ok
+            ? (isZh ? '仅统计公开提交 · 点击日期格子可按天筛选 · 数据来自 GitHub API' : 'Public commits only · Click a day to filter · Data from GitHub API')
+            : (isZh ? 'GitHub API 暂时不可用，显示上次记录的一次提交' : 'GitHub API unavailable — showing the last recorded commit');
+          document.getElementById('gitUpdated').textContent = 'LATEST · ' + gitRel(gitState.commits[0].date.toISOString());
+          renderGitStats(); renderGitCal(); renderGitTimeline();
+        } else {
+          document.getElementById('gitNote').textContent = isZh
+            ? '仅统计公开提交 · 点击日期格子可按天筛选 · 数据来自 GitHub API'
+            : 'Public commits only · Click a day to filter · Data from GitHub API';
+          document.getElementById('gitTimeline').innerHTML = '<div class="git-empty">' + (isZh ? '正在拉取 GitHub 数据…' : 'Loading GitHub data…') + '</div>';
+        }
+      }
+      function gitFetch() {
+        if (gitState.loaded || gitState.loading) return;
+        gitState.loading = true;
+        var urls = [
+          ['lingmao', 'https://api.github.com/repos/xiaoliangao/lingmao/commits?per_page=100'],
+          ['portfolio', 'https://api.github.com/repos/xiaoliangao/portfolio/commits?per_page=100']
+        ];
+        Promise.all(urls.map(function (pair) {
+          return fetch(pair[1]).then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+            .then(function (list) {
+              return (Array.isArray(list) ? list : []).map(function (c) {
+                return { sha: c.sha.slice(0, 7), url: c.html_url, msg: (c.commit.message || '').split('\n')[0], date: new Date(c.commit.author.date), repo: pair[0] };
+              });
+            })
+            .catch(function () { return []; });
+        })).then(function (parts) {
+          var all = parts[0].concat(parts[1]).filter(function (c) { return c.date && !isNaN(c.date.getTime()); });
+          all.sort(function (a, b) { return b.date - a.date; });
+          var ok = all.length > 0;
+          gitState.commits = ok ? all : GIT_FALLBACK.slice();
+          gitState.ok = ok;
+          gitState.loaded = true; gitState.loading = false;
+          syncGitUI();
+        });
+      }
+      function renderGitStats() {
+        var cs = gitState.commits;
+        var days = {};
+        cs.forEach(function (c) { var k = gitDayKey(c.date); days[k] = (days[k] || 0) + 1; });
+        var keys = Object.keys(days).sort();
+        var streak = 0, cur = 0, prev = null;
+        keys.forEach(function (k) {
+          var p = k.split('-');
+          var t = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+          if (prev !== null && t - prev === 86400000) cur += 1; else cur = 1;
+          if (cur > streak) streak = cur;
+          prev = t;
+        });
+        var busiest = '', best = 0;
+        keys.forEach(function (k) { if (days[k] > best) { best = days[k]; busiest = k; } });
+        document.getElementById('gsCommits').textContent = cs.length;
+        document.getElementById('gsDays').textContent = keys.length;
+        document.getElementById('gsStreak').textContent = streak + (state.lang === 'zh' ? ' 天' : ' days');
+        document.getElementById('gsBusy').textContent = busiest
+          ? (state.lang === 'zh'
+            ? busiest.split('-').slice(1).join('月') + '日 · ' + best + ' 次'
+            : GIT_MONTHS_EN[+busiest.split('-')[1] - 1] + ' ' + (+busiest.split('-')[2]) + ' · ' + best)
+          : '–';
+      }
+      function renderGitCal() {
+        var grid = document.getElementById('gitCalGrid');
+        var months = document.getElementById('gitCalMonths');
+        if (!grid || !months) return;
+        var counts = {};
+        gitState.commits.forEach(function (c) { var k = gitDayKey(c.date); counts[k] = (counts[k] || 0) + 1; });
+        var maxN = 1;
+        Object.keys(counts).forEach(function (k) { if (counts[k] > maxN) maxN = counts[k]; });
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var start = new Date(today); start.setDate(start.getDate() - 364);
+        start.setDate(start.getDate() - start.getDay());
+        var totalDays = Math.round((today - start) / 86400000) + 1;
+        var weeks = Math.ceil(totalDays / 7);
+        grid.innerHTML = '';
+        months.innerHTML = '';
+        var seenMonth = {};
+        for (var i = 0; i < weeks * 7; i++) {
+          var d = new Date(start); d.setDate(d.getDate() + i);
+          if (d > today) {
+            var pad = document.createElement('span');
+            pad.className = 'git-cell'; pad.style.visibility = 'hidden';
+            grid.appendChild(pad);
+            continue;
+          }
+          var k = gitDayKey(d);
+          var n = counts[k] || 0;
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'git-cell' + (n === 0 ? '' : n <= maxN * 0.25 ? ' c1' : n <= maxN * 0.5 ? ' c2' : n <= maxN * 0.75 ? ' c3' : ' c4') + (gitState.day === k ? ' sel' : '');
+          b.title = gitDayTitle(d.getMonth(), d.getDate(), n);
+          b.setAttribute('aria-label', b.title);
+          (function (key) {
+            b.addEventListener('click', function () {
+              gitState.day = gitState.day === key ? null : key;
+              renderGitCal(); renderGitTimeline();
+            });
+          })(k);
+          grid.appendChild(b);
+          var m = d.getMonth();
+          if (d.getDate() <= 7 && !seenMonth[m]) {
+            seenMonth[m] = true;
+            var s = document.createElement('span');
+            s.textContent = gitMonthLabel(m);
+            s.style.left = (Math.floor(i / 7) * 17) + 'px';
+            months.appendChild(s);
+          }
+        }
+      }
+      function gitFiltered() {
+        return gitState.commits.filter(function (c) {
+          if (gitState.repo !== 'all' && c.repo !== gitState.repo) return false;
+          if (gitState.day && gitDayKey(c.date) !== gitState.day) return false;
+          return true;
+        });
+      }
+      function renderGitTimeline() {
+        var tl = document.getElementById('gitTimeline');
+        var more = document.getElementById('gitMore');
+        var dayEl = document.getElementById('gitDay');
+        if (!tl) return;
+        var list = gitFiltered();
+        if (gitState.day) {
+          dayEl.hidden = false;
+          dayEl.innerHTML = '';
+          var p = gitState.day.split('-');
+          var wd = new Date(+p[0], +p[1] - 1, +p[2]).getDay();
+          var label = document.createElement('span');
+          label.textContent = state.lang === 'zh'
+            ? p[1] + '月' + (+p[2]) + '日 · ' + gitWD(wd) + ' · ' + list.length + ' 次提交 '
+            : GIT_MONTHS_EN[+p[1] - 1] + ' ' + (+p[2]) + ' · ' + gitWD(wd) + ' · ' + list.length + (list.length === 1 ? ' commit ' : ' commits ');
+          var clear = document.createElement('button');
+          clear.type = 'button'; clear.className = 'git-clear'; clear.textContent = state.lang === 'zh' ? '清除筛选' : 'Clear filter';
+          clear.addEventListener('click', function () { gitState.day = null; renderGitCal(); renderGitTimeline(); });
+          dayEl.appendChild(label); dayEl.appendChild(clear);
+        } else { dayEl.hidden = true; dayEl.innerHTML = ''; }
+        var shown = list.slice(0, gitState.shown);
+        var html = '', lastDay = '';
+        shown.forEach(function (c) {
+          var k = gitDayKey(c.date);
+          if (k !== lastDay) {
+            lastDay = k;
+            html += '<div class="git-day-h">' + (state.lang === 'zh'
+              ? (c.date.getMonth() + 1) + '月' + c.date.getDate() + '日 · ' + gitWD(c.date.getDay())
+              : GIT_MONTHS_EN[c.date.getMonth()] + ' ' + c.date.getDate() + ' · ' + gitWD(c.date.getDay())) + '</div>';
+          }
+          var t = c.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+          html += '<div class="git-item"><span class="git-item-time">' + t + '</span><span class="git-item-msg"><a href="' + c.url + '" target="_blank" rel="noopener">' + gitEsc(c.msg) + '</a></span><span class="git-repo">' + c.repo + '</span></div>';
+        });
+        tl.innerHTML = html || '<div class="git-empty">' + (state.lang === 'zh' ? '这一天没有提交。' : 'No commits on this day.') + '</div>';
+        more.hidden = list.length <= gitState.shown;
+      }
+      document.getElementById('gitFilters').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-repo]');
+        if (!b) return;
+        gitState.repo = b.dataset.repo;
+        gitState.shown = 15;
+        document.querySelectorAll('#gitFilters .git-filter').forEach(function (x) { x.classList.toggle('active', x === b); });
+        renderGitTimeline();
+      });
+      document.getElementById('gitMore').addEventListener('click', function () { gitState.shown += 15; renderGitTimeline(); });
 
       initWebGL();
       buildParticles();

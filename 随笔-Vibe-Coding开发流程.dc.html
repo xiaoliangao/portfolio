@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml" />
   <title>一个人怎么做一个产品：Vibe Coding 的完整开发流程 · xiaoliang</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -214,22 +214,93 @@
       min-height: calc(100vh - 156px);
     }
 
-    /* Bespoke Architectural Identity Badge */
-    .identity-emblem {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background: #18181b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(17, 24, 39, 0.10);
+    /* Avatar: EANG — the Muse plush, typing on a laptop (transparent cutout, mint disc) */
+    .avatar-char {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      position: relative;
       cursor: pointer;
-      transition: transform 0.28s var(--ease), box-shadow 0.28s ease;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.14);
+      animation: char-bob 3.6s ease-in-out infinite;
     }
-    .identity-emblem:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(17, 24, 39, 0.16);
+    .avatar-char::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .avatar-char img {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      animation: typing 1.8s ease-in-out infinite;
+    }
+    .avatar-char:hover { animation-play-state: paused; }
+    @keyframes char-bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    @keyframes typing {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-12px) rotate(-2deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(-12px) rotate(2deg); }
+    }
+    .avatar-char .type-char {
+      position: absolute;
+      z-index: 2;
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      opacity: 0;
+      pointer-events: none;
+      animation: type-float 4s ease-out infinite;
+    }
+    .avatar-char .type-char.t1 { left: 90px; bottom: 34px; animation-delay: 0s; }
+    .avatar-char .type-char.t2 { left: 96px; bottom: 34px; animation-delay: 1.33s; }
+    .avatar-char .type-char.t3 { left: 92px; bottom: 34px; animation-delay: 2.66s; }
+    @keyframes type-float {
+      0% { transform: translateY(0) scale(0.4); opacity: 0; }
+      8% { transform: translateY(-8px) scale(1.25); opacity: 1; }
+      20% { transform: translateY(-20px) scale(1); opacity: 1; }
+      70% { opacity: 1; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
+    }
+    .avatar-char.excited { animation: char-pop 0.8s ease; }
+    @keyframes char-pop {
+      0% { transform: scale(1) translateY(0); }
+      30% { transform: scale(0.94, 1.06) translateY(2px); }
+      60% { transform: scale(1.2, 0.9) translateY(-12px); }
+      100% { transform: scale(1) translateY(0); }
+    }
+    .avatar-char .burst-note {
+      position: absolute;
+      z-index: 2;
+      font-size: 22px;
+      color: #d4a017;
+      pointer-events: none;
+      animation: burst-up 2.2s ease-out forwards;
+      font-family: Georgia, 'Times New Roman', serif;
+      text-shadow: 0 1px 6px rgba(212, 160, 23, 0.45);
+    }
+    @keyframes burst-up {
+      0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-60px) scale(1.2) rotate(20deg); opacity: 0; }
+    }
+    @media (max-width: 860px) {
+      .avatar-char { width: 140px; height: 140px; }
+      .avatar-char .type-char { font-size: 20px; }
+      .avatar-char .type-char.t1 { left: 70px; bottom: 26px; }
+      .avatar-char .type-char.t2 { left: 75px; bottom: 26px; }
+      .avatar-char .type-char.t3 { left: 72px; bottom: 26px; }
     }
 
     .left-name {
@@ -314,14 +385,6 @@
     .snav-btn:hover .snav-line,
     .snav-btn.active .snav-line { width: 44px; background: var(--ink); }
 
-    .left-cta-block {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-
     .primary-pill {
       display: inline-flex;
       align-items: center;
@@ -339,13 +402,34 @@
       transition: transform 0.2s var(--ease), background 0.2s ease;
     }
     .primary-pill:hover { background: #27272a; transform: translateY(-1px); }
-
-    .inline-links {
+    .contact-group {
+      display: inline-flex;
+      align-items: stretch;
+      width: fit-content;
+      border-radius: 999px;
+      background: var(--charcoal);
+      box-shadow: 0 4px 12px rgba(24, 24, 27, 0.12);
+      overflow: hidden;
+    }
+    .contact-seg {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      padding: 9px 16px;
+      color: #ffffff;
       font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.2s ease;
     }
+    .contact-seg:hover { background: #27272a; }
+    .contact-div { width: 1px; background: rgba(255, 255, 255, 0.28); margin: 9px 0; }
+
 
     .clean-link {
       color: var(--ink2);
@@ -719,15 +803,73 @@
       font-size: 14px;
       color: var(--ink2);
     }
-    .seal-cta {
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--mute);
-      background: none;
-      border: none;
-      cursor: pointer;
+    @media (max-width: 860px) {
+      .site-footer { flex-direction: column; align-items: stretch; }
     }
-    .seal-cta:hover { color: var(--ink); }
+
+    /* Git activity view (dock tab) — light editorial style, full-year heatmap */
+    .git-page { padding: 8px 0 30px; }
+    .git-h {
+      font-family: var(--font-heading);
+      font-size: 30px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 10px 0 8px;
+    }
+    .git-updated { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--mute); margin-bottom: 4px; }
+    .git-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .git-stat {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px 12px;
+      background: #fcfcfa;
+    }
+    .git-stat-n { font-family: var(--font-heading); font-size: 26px; font-weight: 600; }
+    .git-stat-l { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; color: var(--mute); margin-top: 2px; }
+    .git-cal-wrap { overflow-x: auto; padding-bottom: 4px; }
+    .git-cal { display: inline-flex; gap: 10px; }
+    .git-cal-days { position: relative; width: 24px; flex: none; font-family: var(--font-mono); font-size: 9.5px; color: var(--mute); }
+    .git-cal-days span { position: absolute; left: 0; }
+    .git-cal-days span:nth-child(1) { top: 37px; }
+    .git-cal-days span:nth-child(2) { top: 71px; }
+    .git-cal-days span:nth-child(3) { top: 105px; }
+    .git-cal-main { display: flex; flex-direction: column; gap: 4px; }
+    .git-cal-months { position: relative; height: 14px; font-family: var(--font-mono); font-size: 10px; color: var(--mute); }
+    .git-cal-months span { position: absolute; top: 0; }
+    .git-cal-grid { display: grid; grid-template-rows: repeat(7, 14px); grid-auto-flow: column; grid-auto-columns: 14px; gap: 3px; }
+    .git-cell { width: 14px; height: 14px; border-radius: 3px; background: #eef2f7; border: none; padding: 0; cursor: pointer; }
+    .git-cell.c1 { background: #a7f3d0; }
+    .git-cell.c2 { background: #6ee7b7; }
+    .git-cell.c3 { background: #34d399; }
+    .git-cell.c4 { background: #059669; }
+    .git-cell.sel { outline: 2px solid #d4a017; outline-offset: 1px; }
+    .git-legend { display: flex; align-items: center; justify-content: flex-end; gap: 5px; font-family: var(--font-mono); font-size: 10.5px; color: var(--mute); margin-top: 10px; }
+    .git-legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; border: 1px solid var(--border); }
+    .git-day { margin: 12px 0 4px; font-size: 13px; color: var(--ink2); }
+    .git-clear { margin-left: 8px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: #fff; font-size: 12px; cursor: pointer; color: var(--ink2); }
+    .git-filters { display: flex; gap: 6px; margin: 16px 0 8px; flex-wrap: wrap; }
+    .git-filter { padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border); background: transparent; font-size: 12.5px; cursor: pointer; color: var(--ink2); }
+    .git-filter.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+    .git-day-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--mute); margin: 18px 0 6px; }
+    .git-item { display: flex; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--border); font-size: 13.5px; align-items: baseline; }
+    .git-item-time { font-family: var(--font-mono); font-size: 11.5px; color: var(--mute); flex: none; width: 44px; }
+    .git-item-msg { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+    .git-item-msg a { color: inherit; text-decoration: none; }
+    .git-item-msg a:hover { text-decoration: underline; }
+    .git-repo { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink2); border: 1px solid var(--border); border-radius: 999px; padding: 2px 8px; flex: none; }
+    .git-more { margin-top: 16px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border); background: #fff; cursor: pointer; font-size: 13px; }
+    .git-more:hover { border-color: var(--ink); }
+    .git-note { margin-top: 18px; font-size: 12px; color: var(--mute); }
+    .git-empty { padding: 26px 0; color: var(--mute); font-size: 13.5px; }
+    @media (max-width: 860px) {
+      .git-stats { grid-template-columns: repeat(2, 1fr); }
+      .git-h { font-size: 25px; }
+    }
 
     /* Bottom Floating Capsule Dock */
     .dock-wrap {
@@ -942,7 +1084,7 @@
     .art-wrap { max-width: 760px; margin: 0 auto; padding: 40px 0 60px; }
     .art-tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 18px; }
     .art-tags span { font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; border:1px solid var(--border); border-radius:999px; padding:3px 11px; color:var(--ink2); }
-    .art-h1 { font-family:var(--font-heading); font-weight:600; font-size:clamp(26px,3.4vw,34px); line-height:1.5; letter-spacing:-0.01em; margin-bottom:14px; }
+    .art-h1 { font-family:var(--font-heading); font-weight:600; font-size:clamp(26px,3.4vw,34px); line-height:1.5; letter-spacing:-0.01em; margin-bottom:14px; text-wrap:balance; }
     .art-h1 em { font-style:italic; color:var(--blue); }
     .art-meta { font-family:var(--font-mono); font-size:11.5px; color:var(--mute); margin-bottom: 8px; }
     .art-lead { margin-top:30px; border-left:2px solid var(--blue); background:var(--surface); padding:18px 22px; border-radius:0 12px 12px 0; font-size:14.5px; line-height:2; color:var(--ink2); }
@@ -963,6 +1105,21 @@
     .art-table tr:last-child td { border-bottom:none; }
     .art-ul { margin:16px 0 0; padding-left:20px; font-size:15px; line-height:2; color:var(--ink2); }
     .art-nav { margin-top:48px; padding-top:24px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    .art-nav-link { display:flex; flex-direction:column; gap:4px; text-decoration:none; }
+    .art-nav-label { font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; color:var(--mute); }
+    .art-nav-title { font-family:var(--font-heading); font-size:17px; font-weight:600; line-height:1.6; color:var(--ink); }
+    .art-nav-link:hover .art-nav-title { color:var(--blue); }
+    .art-actions { display:flex; gap:12px; margin-top:28px; flex-wrap:wrap; }
+    .secondary-pill { display:inline-flex; align-items:center; justify-content:center; width:fit-content; padding:9px 18px; border-radius:999px; border:1px solid var(--border); background:#fff; color:var(--ink); font-size:13px; font-weight:500; text-decoration:none; transition: transform .2s var(--ease), border-color .2s ease; }
+    .secondary-pill:hover { border-color:var(--ink); transform: translateY(-1px); }
+    @media (max-width: 860px) {
+      .art-wrap { padding:28px 0 44px; }
+      .art-callout, .art-note { padding:20px; }
+      .art-tpl { padding:16px 18px; }
+      .art-nav { flex-direction:column; align-items:stretch; gap:16px; }
+      .art-nav-title { font-size:16px; }
+      .art-actions .primary-pill, .art-actions .secondary-pill { flex:1; padding:11px 12px; }
+    }
     .art-callout { margin-top:20px; border:1px solid rgba(37,99,235,.4); border-radius:14px; padding:26px 30px; background:var(--surface); }
     .art-callout-label { font-family:var(--font-mono); font-size:11px; letter-spacing:.2em; color:var(--blue); }
     .art-callout-list { margin-top:16px; display:flex; flex-direction:column; gap:14px; font-size:15px; line-height:1.95; color:var(--ink); }
@@ -1164,17 +1321,17 @@
 
       <p class="art-p">最后想说：流程不是目的，它存在的意义是<strong>让一个人的判断，在 AI 的执行力放大之前先被检验一遍</strong>。第一篇讲的是公司里一群人怎么协作，这一篇讲的是一个人怎么借助 AI 做产品——规模不同，道理相同。小团队可以裁剪环节，但「阶段有出口标准、交付物向下游负责、变更走明路」这三件事，多小的团队都不该省；一个人也一样。</p>
       <nav class="art-nav">
-        <span><a class="clean-link" href="随笔-开发流程.dc.html">← 上一篇 · 一个软件项目是怎么从想法走到上线的：完整的公司级开发流程</a></span>
+        <span><a class="art-nav-link" href="随笔-开发流程.dc.html"><span class="art-nav-label">← 上一篇</span><span class="art-nav-title">一个软件项目是怎么从想法走到上线的：完整的公司级开发流程</span></a></span>
         <span><span></span></span>
       </nav>
-      <div style="display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;">
+      <div class="art-actions">
         <a href="留言墙.dc.html" class="primary-pill" style="text-decoration:none;">去留言墙说说 →</a>
-        <a href="首页.dc.html" class="clean-link">回首页</a>
+        <a href="首页.dc.html" class="secondary-pill">回首页</a>
       </div>
     </article>
 
     <footer class="site-footer">
-      <div class="footer-motto">“带着离开的决心，只为更好的归来。” · © 2026 Liang</div>
+      <div class="footer-motto">“带着离开的决心，只为更好的归来。” · © 2026 Xiao Liang</div>
       <a class="clean-link" href="简历CV.dc.html">简历 CV ↗</a>
     </footer>
   </div>
