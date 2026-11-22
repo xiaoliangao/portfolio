@@ -852,9 +852,6 @@
     .git-legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; border: 1px solid var(--border); }
     .git-day { margin: 12px 0 4px; font-size: 13px; color: var(--ink2); }
     .git-clear { margin-left: 8px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: #fff; font-size: 12px; cursor: pointer; color: var(--ink2); }
-    .git-filters { display: flex; gap: 6px; margin: 16px 0 8px; flex-wrap: wrap; }
-    .git-filter { padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border); background: transparent; font-size: 12.5px; cursor: pointer; color: var(--ink2); }
-    .git-filter.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
     .git-day-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--mute); margin: 18px 0 6px; }
     .git-item { display: flex; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--border); font-size: 13.5px; align-items: baseline; }
     .git-item-time { font-family: var(--font-mono); font-size: 11.5px; color: var(--mute); flex: none; width: 44px; }
@@ -1241,7 +1238,7 @@
         <div class="sec-label">GIT · GITHUB</div>
         <h2 class="git-h" id="gitH">最近提交的代码。</h2>
         <div class="git-updated" id="gitUpdated">LATEST · —</div>
-        <p class="item-desc" id="gitSub">公开仓库过去一年的提交动态：lingmao 与 portfolio 两个仓库，按天分组。</p>
+        <p class="item-desc" id="gitSub">全部公开仓库过去一年的提交动态，按天分组。</p>
         <div class="git-stats">
           <div class="git-stat"><div class="git-stat-n" id="gsCommits">–</div><div class="git-stat-l" id="gsCommitsL">提交 COMMITS</div></div>
           <div class="git-stat"><div class="git-stat-n" id="gsDays">–</div><div class="git-stat-l" id="gsDaysL">活跃天数 ACTIVE DAYS</div></div>
@@ -1259,11 +1256,6 @@
         </div>
         <div class="git-legend"><span>Less</span><i style="background:#eef2f7"></i><i style="background:#a7f3d0"></i><i style="background:#6ee7b7"></i><i style="background:#34d399"></i><i style="background:#059669"></i><span>More</span></div>
         <div class="git-day" id="gitDay" hidden></div>
-        <div class="git-filters" id="gitFilters">
-          <button class="git-filter active" type="button" data-repo="all" id="gitFilterAll">全部</button>
-          <button class="git-filter" type="button" data-repo="lingmao">lingmao</button>
-          <button class="git-filter" type="button" data-repo="portfolio">portfolio</button>
-        </div>
         <div class="git-timeline" id="gitTimeline"><div class="git-empty">正在拉取 GitHub 数据…</div></div>
         <button class="git-more" id="gitMore" type="button" hidden>显示更多</button>
         <p class="git-note" id="gitNote">仅统计公开提交 · 点击日期格子可按天筛选 · 数据来自 GitHub API</p>
@@ -2429,7 +2421,7 @@
       });
 
       /* ---- Git activity view (dock tab) ---- */
-      var gitState = { loaded: false, loading: false, commits: [], repo: 'all', day: null, shown: 15 };
+      var gitState = { loaded: false, loading: false, commits: [], day: null, shown: 15 };
       var GIT_FALLBACK = [{ sha: '6ae88f5', url: 'https://github.com/xiaoliangao/portfolio/commit/6ae88f5', msg: 'Redesign: light editorial style, original content; drop .dc framework', date: new Date('2026-11-22T10:54:55Z'), repo: 'portfolio' }];
       function gitDayKey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
       function gitRel(iso) {
@@ -2453,13 +2445,12 @@
         var isZh = state.lang === 'zh';
         document.getElementById('gitH').textContent = isZh ? '最近提交的代码。' : 'Code I shipped recently.';
         document.getElementById('gitSub').textContent = isZh
-          ? '公开仓库过去一年的提交动态：lingmao 与 portfolio 两个仓库，按天分组。'
-          : 'Public commits from the past year across lingmao and portfolio, grouped by day.';
+          ? '全部公开仓库过去一年的提交动态，按天分组。'
+          : 'Public commits from the past year across all public repositories, grouped by day.';
         document.getElementById('gsCommitsL').textContent = isZh ? '提交 COMMITS' : 'COMMITS';
         document.getElementById('gsDaysL').textContent = isZh ? '活跃天数 ACTIVE DAYS' : 'ACTIVE DAYS';
         document.getElementById('gsStreakL').textContent = isZh ? '最长连击 LONGEST STREAK' : 'LONGEST STREAK';
         document.getElementById('gsBusyL').textContent = isZh ? '最忙一天 BUSIEST DAY' : 'BUSIEST DAY';
-        document.getElementById('gitFilterAll').textContent = isZh ? '全部' : 'All';
         document.getElementById('gitMore').textContent = isZh ? '显示更多' : 'Show more';
         if (gitState.loaded) {
           document.getElementById('gitNote').textContent = gitState.ok
@@ -2477,10 +2468,10 @@
       function gitFetch() {
         if (gitState.loaded || gitState.loading) return;
         gitState.loading = true;
-        var urls = [
-          ['lingmao', 'https://api.github.com/repos/xiaoliangao/lingmao/commits?per_page=100'],
-          ['portfolio', 'https://api.github.com/repos/xiaoliangao/portfolio/commits?per_page=100']
-        ];
+        var repos = ['claude-mcp', 'portfolio', 'lingmao', 'zjyjs', 'switch_auth', 'openclaw_dashboard', 'ai-fund-assistant', 'taskRag', 'codex-mcp-dsh', 'interviewAssit'];
+        var urls = repos.map(function (name) {
+          return [name, 'https://api.github.com/repos/xiaoliangao/' + name + '/commits?per_page=100'];
+        });
         Promise.all(urls.map(function (pair) {
           return fetch(pair[1]).then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
             .then(function (list) {
@@ -2490,7 +2481,9 @@
             })
             .catch(function () { return []; });
         })).then(function (parts) {
-          var all = parts[0].concat(parts[1]).filter(function (c) { return c.date && !isNaN(c.date.getTime()); });
+          var all = [];
+          parts.forEach(function (p) { all = all.concat(p); });
+          all = all.filter(function (c) { return c.date && !isNaN(c.date.getTime()); });
           all.sort(function (a, b) { return b.date - a.date; });
           var ok = all.length > 0;
           gitState.commits = ok ? all : GIT_FALLBACK.slice();
@@ -2573,7 +2566,6 @@
       }
       function gitFiltered() {
         return gitState.commits.filter(function (c) {
-          if (gitState.repo !== 'all' && c.repo !== gitState.repo) return false;
           if (gitState.day && gitDayKey(c.date) !== gitState.day) return false;
           return true;
         });
@@ -2614,14 +2606,6 @@
         tl.innerHTML = html || '<div class="git-empty">' + (state.lang === 'zh' ? '这一天没有提交。' : 'No commits on this day.') + '</div>';
         more.hidden = list.length <= gitState.shown;
       }
-      document.getElementById('gitFilters').addEventListener('click', function (e) {
-        var b = e.target.closest('[data-repo]');
-        if (!b) return;
-        gitState.repo = b.dataset.repo;
-        gitState.shown = 15;
-        document.querySelectorAll('#gitFilters .git-filter').forEach(function (x) { x.classList.toggle('active', x === b); });
-        renderGitTimeline();
-      });
       document.getElementById('gitMore').addEventListener('click', function () { gitState.shown += 15; renderGitTimeline(); });
 
       initWebGL();
