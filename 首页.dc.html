@@ -1,583 +1,2217 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<script src="./support.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <title>Liang (xiaoliang) — AI 应用开发 · 个人主页与简历</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Serif+SC:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: rgba(249, 250, 251, 0.78);
+      --surface-hover: rgba(255, 255, 255, 0.96);
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --ink: #111827;
+      --ink2: #4b5563;
+      --mute: #6b7280;
+      --charcoal: #18181b;
+      --blue: #2563eb;
+      --seal: #d9381a;
+      --dock-bg: rgba(255, 255, 255, 0.88);
+      --font-heading: 'Newsreader', 'Noto Serif SC', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: clip;
+    }
+
+    ::selection { background: #18181b; color: #ffffff; }
+
+    /* Restrained WebGL Subtle Ring-Particle Canvas */
+    #subtleRingCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      display: block;
+    }
+
+    /* Personal "Liang" Seal Overlay */
+    #stampOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-seal {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 11px 4px;
+      border: 1.5px solid var(--seal);
+      border-radius: 5px;
+      color: var(--seal);
+      font-family: var(--font-heading);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 17px;
+      letter-spacing: 0.03em;
+      line-height: 1;
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 14px rgba(217, 56, 26, 0.08);
+      animation: sealIn 0.36s var(--ease) forwards;
+      user-select: none;
+    }
+
+    .floating-seal::after {
+      content: '2026';
+      margin-top: 2px;
+      font-family: var(--font-mono);
+      font-style: normal;
+      font-size: 7px;
+      letter-spacing: 0.16em;
+      opacity: 0.7;
+    }
+
+    @keyframes sealIn {
+      0% { opacity: 0; transform: translate(-50%, -40%) scale(1.35) rotate(var(--rot, -4deg)); }
+      100% { opacity: 0.85; transform: translate(-50%, -50%) scale(1) rotate(var(--rot, -4deg)); }
+    }
+
+    /* Main Shell */
+    .shell {
+      position: relative;
+      z-index: 2;
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 0 28px 128px;
+      pointer-events: none;
+    }
+
+    .shell a,
+    .shell button,
+    .shell input,
+    .shell textarea,
+    .shell .split-left,
+    .shell .split-right,
+    .shell .paper-stage,
+    .shell .gb-layout,
+    .shell .site-footer {
+      pointer-events: auto;
+    }
+
+    /* Clean Understated Masthead */
+    .masthead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 0 18px;
+      border-bottom: 1px solid var(--border);
+      pointer-events: auto;
+    }
+
+    .brand-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    /* Bespoke Original XL Geometric Seal Logo (Zero agy borrowing) */
+    .xl-logo {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      transition: transform 0.3s var(--ease);
+    }
+    .brand-group:hover .xl-logo { transform: rotate(-4deg) scale(1.04); }
+
+    .brand-text {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 16.5px;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .masthead-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chip-btn {
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--ink2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+    .chip-btn:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .clear-seals-btn {
+      display: none;
+      border-color: rgba(217, 56, 26, 0.35);
+      color: var(--seal);
+    }
+    .clear-seals-btn.visible { display: inline-flex; }
+
+    /* Views */
+    .view { display: none; animation: viewIn 0.35s var(--ease); }
+    .view.active { display: block; }
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Calm Sticky Split Layout */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 64px;
+      align-items: start;
+      padding-top: 44px;
+    }
+
+    .split-left {
+      position: sticky;
+      top: 32px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: calc(100vh - 156px);
+    }
+
+    /* Bespoke Architectural Identity Badge */
+    .identity-emblem {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: #18181b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(17, 24, 39, 0.10);
+      cursor: pointer;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s ease;
+    }
+    .identity-emblem:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(17, 24, 39, 0.16);
+    }
+
+    .left-name {
+      font-family: var(--font-sans);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--ink);
+      letter-spacing: -0.025em;
+      margin-top: 18px;
+    }
+
+    .left-sub {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--mute);
+      margin-top: 4px;
+    }
+
+    .left-role {
+      font-size: 14px;
+      color: var(--ink2);
+      margin-top: 12px;
+      line-height: 1.68;
+    }
+
+    .now-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      backdrop-filter: blur(8px);
+      font-size: 12px;
+      color: var(--ink2);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .now-pill:hover { border-color: var(--border-strong); color: var(--ink); }
+
+    .pulse-dot {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+      background: #10b981;
+      flex-shrink: 0;
+    }
+
+    /* Sticky Scroll-Spy Nav */
+    .sticky-nav { display: flex; flex-direction: column; gap: 9px; }
+
+    .snav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      background: none;
+      border: none;
+      color: var(--mute);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      width: fit-content;
+      padding: 3px 0;
+      transition: color 0.22s ease;
+    }
+
+    .snav-line {
+      width: 20px;
+      height: 1.5px;
+      background: #d1d5db;
+      transition: width 0.28s var(--ease), background 0.22s ease;
+    }
+
+    .snav-btn:hover,
+    .snav-btn.active { color: var(--ink); font-weight: 500; }
+    .snav-btn:hover .snav-line,
+    .snav-btn.active .snav-line { width: 44px; background: var(--ink); }
+
+    .left-cta-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .primary-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--charcoal);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(24, 24, 27, 0.12);
+      transition: transform 0.2s var(--ease), background 0.2s ease;
+    }
+    .primary-pill:hover { background: #27272a; transform: translateY(-1px); }
+
+    .inline-links {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .clean-link {
+      color: var(--ink2);
+      text-decoration: none;
+      background: none;
+      border: none;
+      font: inherit;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .clean-link:hover { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
+
+    .pipe-sep { width: 1px; height: 11px; background: var(--border-strong); }
+
+    /* Right Content Column (Restrained Scale & Clean Hierarchy) */
+    .right-sec {
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    .editorial-h1 {
+      font-family: var(--font-heading);
+      font-weight: 500;
+      font-size: clamp(28px, 3.4vw, 36px);
+      line-height: 1.32;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    .editorial-h1 em {
+      font-style: italic;
+      color: var(--blue);
+    }
+
+    .body-p {
+      font-size: 15px;
+      line-height: 1.82;
+      color: var(--ink2);
+      margin-bottom: 14px;
+    }
+    .body-p strong { color: var(--ink); font-weight: 600; }
+
+    .sec-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-bottom: 20px;
+    }
+
+    .sec-label {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .sec-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--mute);
+    }
+
+    /* Subtle Focus Cards */
+    .dim-list { display: flex; flex-direction: column; gap: 12px; }
+    .dim-list:hover .dim-item { opacity: 0.62; }
+    .dim-list:hover .dim-item:hover { opacity: 1; }
+
+    .dim-item {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 16px;
+      padding: 20px 22px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: transform 0.22s var(--ease), opacity 0.24s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .dim-item:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-strong);
+      transform: translateY(-1.5px);
+      box-shadow: 0 8px 24px rgba(17, 24, 39, 0.045);
+    }
+
+    .item-date { font-family: var(--font-mono); font-size: 11.5px; color: var(--mute); padding-top: 3px; }
+    .item-title {
+      font-family: var(--font-heading);
+      font-size: 17.5px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .item-desc { font-size: 14px; line-height: 1.72; color: var(--ink2); margin-bottom: 12px; }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--ink2);
+    }
+
+    .filter-row { display: flex; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; }
+    .flt-btn {
+      padding: 5px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--ink2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .flt-btn.active {
+      background: var(--charcoal);
+      border-color: var(--charcoal);
+      color: #ffffff;
+    }
+    .flt-btn:not(.active):hover { border-color: var(--ink); color: var(--ink); }
+
+    .stack-toggle {
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--mute);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .stack-toggle:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* Writing List */
+    .writing-index { border-top: 1px solid var(--border); }
+    .w-row {
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
+      gap: 12px;
+      align-items: baseline;
+      padding: 16px 8px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s ease, padding-left 0.22s var(--ease);
+    }
+    .w-row:hover { background: var(--surface); padding-left: 14px; }
+    .w-num { font-family: var(--font-mono); font-size: 11.5px; color: var(--mute); }
+    .w-title { font-family: var(--font-heading); font-size: 18px; font-weight: 500; color: var(--ink); line-height: 1.35; }
+    .w-meta { font-family: var(--font-mono); font-size: 11px; color: var(--mute); white-space: nowrap; }
+
+    /* Guestbook View */
+    .gb-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 28px;
+      padding-top: 38px;
+      align-items: start;
+    }
+
+    .gb-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      backdrop-filter: blur(12px);
+    }
+
+    .f-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--mute);
+      margin-bottom: 6px;
+    }
+
+    .f-input, .f-area {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 9px 11px;
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13.5px;
+      margin-bottom: 13px;
+      outline: none;
+    }
+    .f-input:focus, .f-area:focus { border-color: var(--ink); }
+
+    .f-submit {
+      width: 100%;
+      padding: 10px;
+      border-radius: 999px;
+      border: none;
+      background: var(--charcoal);
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+
+    .stamp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+    .stamp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      backdrop-filter: blur(10px);
+    }
+    .stamp-tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid var(--seal);
+      color: var(--seal);
+      background: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    /* Paper Resume View */
+    .paper-stage { display: flex; flex-direction: column; align-items: center; padding: 34px 0 16px; }
+    .paper-stack { position: relative; width: 100%; max-width: 720px; }
+    .paper-under {
+      position: absolute;
+      inset: 8px -5px -8px 7px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      transform: rotate(0.8deg);
+      z-index: 0;
+    }
+    .paper-sheet {
+      position: relative;
+      z-index: 1;
+      background: #ffffff;
+      color: #18181b;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 44px 48px 56px;
+      min-height: 700px;
+      box-shadow: 0 18px 48px rgba(15, 23, 42, 0.07);
+      transition: opacity 0.22s ease;
+      overflow: hidden;
+    }
+    .paper-sheet.flipping { opacity: 0.4; }
+
+    .paper-seal {
+      position: absolute;
+      right: 46px;
+      bottom: 60px;
+      padding: 6px 13px 5px;
+      border: 1.6px solid var(--seal);
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--seal);
+      font-family: var(--font-heading);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 1;
+      transform: rotate(-5deg);
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .paper-seal span {
+      font-family: var(--font-mono);
+      font-style: normal;
+      font-size: 7px;
+      letter-spacing: 0.15em;
+      margin-top: 3px;
+    }
+
+    .p-head {
+      border-bottom: 1px solid #e4e4e7;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .p-name { font-family: var(--font-heading); font-size: 32px; font-weight: 600; color: #09090b; line-height: 1.1; }
+    .p-role { font-size: 13.5px; color: #52525b; margin-top: 4px; }
+    .p-contact { font-family: var(--font-mono); font-size: 11.5px; color: #52525b; text-align: right; line-height: 1.68; }
+    .p-sec { margin-bottom: 18px; }
+    .p-sec-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      border-bottom: 1px solid #e4e4e7;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+    }
+    .p-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+    .p-row-t { font-weight: 600; font-size: 14px; color: #18181b; }
+    .p-row-d { font-family: var(--font-mono); font-size: 11px; color: #71717a; white-space: nowrap; }
+    .p-desc { font-size: 13.5px; line-height: 1.68; color: #3f3f46; margin-bottom: 12px; }
+    .p-num { position: absolute; left: 48px; bottom: 20px; font-family: var(--font-mono); font-size: 11px; color: #a1a1aa; }
+    .page-curl {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, transparent 48%, rgba(15, 23, 42, 0.08) 50%, #e5e7eb 53%, #ffffff 78%, #d1d5db 100%);
+      border: none;
+      cursor: pointer;
+      transition: width 0.22s var(--ease), height 0.22s var(--ease);
+    }
+    .page-curl:hover { width: 66px; height: 66px; }
+
+    .paper-ctrls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
+    .p-ctrl {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .p-ctrl:hover { border-color: var(--ink); }
+    .p-ctrl.primary { background: var(--charcoal); color: #ffffff; border-color: var(--charcoal); }
+
+    /* Footer */
+    .site-footer {
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12.5px;
+      color: var(--mute);
+    }
+    .footer-motto {
+      font-family: var(--font-heading);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink2);
+    }
+    .seal-cta {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--mute);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .seal-cta:hover { color: var(--ink); }
+
+    /* Bottom Floating Capsule Dock */
+    .dock-wrap {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: calc(100vw - 24px);
+    }
+
+    .dock {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 4px;
+      border-radius: 999px;
+      background: var(--dock-bg);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .dock-btn {
+      padding: 7px 15px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--ink2);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.22s var(--ease);
+    }
+    .dock-btn:hover { color: var(--ink); }
+    .dock-btn.active { background: var(--charcoal); color: #ffffff; }
+
+    .sound-btn {
+      height: 38px;
+      padding: 0 13px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--dock-bg);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      flex-shrink: 0;
+      color: var(--ink2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      transition: all 0.2s ease;
+    }
+    .sound-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .sound-bars { display: inline-flex; align-items: center; gap: 2px; height: 14px; }
+    .s-bar { width: 2px; height: 6px; border-radius: 2px; background: #9ca3af; }
+    .sound-btn.playing { border-color: var(--ink); color: var(--ink); }
+    .sound-btn.playing .s-bar { background: var(--ink); animation: sWave 1.1s ease-in-out infinite; }
+    .sound-btn.playing .s-bar:nth-child(2) { animation-delay: 0.2s; }
+    .sound-btn.playing .s-bar:nth-child(3) { animation-delay: 0.4s; }
+    .sound-btn.playing .s-bar:nth-child(4) { animation-delay: 0.15s; }
+    @keyframes sWave { 0%, 100% { height: 4px; } 50% { height: 13px; } }
+
+    /* Command Palette (⌘K) */
+    .cmd-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(17, 24, 39, 0.24);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 14vh 20px 20px;
+    }
+    .cmd-bg.open { display: flex; animation: viewIn 0.18s var(--ease); }
+    .cmd-box {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 56px rgba(15, 23, 42, 0.16);
+    }
+    .cmd-head {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--mute);
+    }
+    .cmd-list { padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+    .cmd-item {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: var(--ink);
+      font-size: 13.5px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .cmd-item:hover { background: #f3f4f6; }
+    .cmd-key { font-family: var(--font-mono); font-size: 11px; color: var(--mute); }
+
+    /* Reader Modal */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(17, 24, 39, 0.28);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-bg.open { display: flex; }
+    .modal-box {
+      width: 100%;
+      max-width: 620px;
+      max-height: 82vh;
+      overflow-y: auto;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      position: relative;
+      box-shadow: 0 24px 64px rgba(15, 23, 42, 0.16);
+    }
+    .modal-x {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      color: var(--ink);
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-16px);
+      z-index: 90;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--charcoal);
+      color: #ffffff;
+      font-size: 12.5px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s var(--ease);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 860px) {
+      .split-layout { grid-template-columns: 1fr; gap: 32px; padding-top: 28px; }
+      .split-left { position: static; min-height: auto; }
+      .sticky-nav { display: none; }
+      .dim-item { grid-template-columns: 1fr; gap: 6px; }
+      .gb-layout { grid-template-columns: 1fr; }
+      .paper-sheet { padding: 28px 20px 48px; min-height: 560px; }
+      .paper-under { display: none; }
+      .paper-seal { right: 20px; bottom: 48px; font-size: 17px; }
+      .sound-label { display: none; }
+    }
+
+    @media print {
+      #subtleRingCanvas, #stampOverlay, .masthead, .dock-wrap, .site-footer,
+      .paper-ctrls, .paper-under, .page-curl, .modal-bg, .cmd-bg, .toast {
+        display: none !important;
+      }
+      html, body { background: #ffffff !important; color: #111111 !important; }
+      .shell { max-width: 100% !important; padding: 0 !important; }
+      .view { display: none !important; }
+      #view-resume { display: block !important; }
+      .paper-stage { padding: 0 !important; }
+      .paper-sheet { box-shadow: none !important; border: none !important; padding: 10px 14px !important; min-height: auto !important; }
+    }
+    /* Guestbook server state */
+    .hp-field { position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
+    .gb-meta { display:flex; justify-content:space-between; gap:12px; margin-top:10px; font-family:var(--font-mono); font-size:11px; color:var(--mute); }
+    .gb-more-wrap { margin-top:16px; text-align:center; }
+    .gb-status { font-family:var(--font-mono); font-size:11.5px; letter-spacing:.06em; color:var(--mute); }
+    .writing-index a.w-row { text-decoration:none; }
+  </style>
 </head>
 <body>
-<x-dc>
-<helmet data-dc-atomics>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet">
-<style>
-body{margin:0;background:#0d0b08;font-family:'Noto Sans SC',system-ui,sans-serif;color:#f0e8d8}
-a{color:inherit;text-decoration:none}
-a:hover{opacity:.95}
-::selection{background:#ff5230;color:#0d0b08}
-.cur-none,.cur-none a,.cur-none input{cursor:none}
-[data-tilt]:hover .flip{transform:rotateY(180deg)}
-@keyframes blink{0%,55%{opacity:1}56%,100%{opacity:0}}
-@keyframes marquee{to{transform:translateX(-50%)}}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,158,107,.55)}50%{box-shadow:0 0 0 7px rgba(74,158,107,0)}}
-@keyframes spinSlow{to{transform:rotate(360deg)}}
-@keyframes rowFlashG{0%{background:rgba(74,158,107,.45)}100%{background:rgba(74,158,107,.13)}}
-@keyframes rowFlashO{0%{background:rgba(255,82,48,.5)}100%{background:rgba(255,82,48,.14)}}
-@media(max-width:820px){
-[style*="grid-template-columns:1fr 280px"]{grid-template-columns:1fr!important;gap:34px!important}
-[style*="font-size:118px"]{font-size:84px!important}
-[style*="width:280px;height:330px"]{width:240px!important;height:284px!important;margin:0 auto!important}
-[style*="display:flex;gap:28px;align-items:center"]{gap:16px!important;flex-wrap:wrap!important;justify-content:flex-end!important}
-[style*="width:540px;max-width:92vw"]{width:92vw!important}
-[data-tilt]{height:auto!important}
-[data-tilt] .flip{transform:none!important;height:auto!important}
-[data-tilt] .flip>div{position:relative!important;transform:none!important}
-[style*="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9a8f7c"]{display:none!important}
-}
-@media(max-width:560px){
-[style*="font-size:118px"]{font-size:62px!important}
-[style*="grid-template-columns:76px 24px 1fr"]{grid-template-columns:40px 16px 1fr!important}
-[style*="padding:64px 40px 56px"]{padding:30px 16px 34px!important}
-[style*="padding:22px 40px 0"]{padding:16px 16px 0!important}
-[style*="padding:10px 40px"]{padding:9px 13px!important}
-[style*="padding:0 40px 56px"]{padding:0 16px 40px!important}
-[style*="padding:20px 40px 24px"]{padding:18px 16px!important;flex-direction:column!important;gap:10px!important}
-[style*="display:flex;gap:28px;align-items:center"]{gap:11px!important;font-size:12px!important}
-[style*="font-size:25px"]{font-size:20px!important}
-[style*="padding:10px 40px"]{flex-wrap:wrap!important}
-[style*="padding:6px 0 24px"]{flex-wrap:wrap!important}
-}
-</style>
-</helmet>
+  <canvas id="subtleRingCanvas" aria-hidden="true"></canvas>
+  <div id="stampOverlay" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<div data-screen-label="首页" class="cur-none" onPointerMove="{{ curMove }}" onPointerLeave="{{ curLeave }}" style="position:relative;min-height:100vh;overflow:hidden">
-  <div style="{{ cursorDotStyle }}"></div>
+  <div class="shell">
+    <!-- Top Masthead with Original XL Monogram Seal -->
+    <header class="masthead">
+      <button class="brand-group" id="brandBtn" type="button">
+        <svg class="xl-logo" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="2.5" y="2.5" width="27" height="27" rx="7" stroke="#18181B" stroke-width="1.8" fill="#FFFFFF" />
+          <path d="M10.5 9.5V22.5H19.5" stroke="#18181B" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="21.5" cy="11" r="2.6" fill="#D9381A" />
+        </svg>
+        <span class="brand-text">xiaoliang</span>
+      </button>
 
-  <div onClick="{{ skipBoot }}" style="{{ bootStyle }}">
-    <sc-if value="{{ bootOn }}" hint-placeholder-val="{{ true }}">
-      <div style="width:540px;max-width:92vw">
-        <div style="display:flex;align-items:center;gap:7px;background:#1d1812;border:1px solid rgba(240,232,216,.16);border-bottom:none;border-radius:14px 14px 0 0;padding:11px 16px">
-          <span style="width:11px;height:11px;border-radius:99px;background:#ff5f57"></span><span style="width:11px;height:11px;border-radius:99px;background:#febc2e"></span><span style="width:11px;height:11px;border-radius:99px;background:#28c840"></span>
-          <span style="margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a8f7c">boot.ts — xiaoliangOS</span>
-          <span style="margin-left:auto;display:inline-block;font-size:15px;line-height:1;color:#ff5230;animation:spinSlow 2.4s linear infinite">✦</span>
-        </div>
-        <div style="background:#14100b;border:1px solid rgba(240,232,216,.16);border-top:none;border-radius:0 0 14px 14px;padding:18px 24px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:2.05;color:#f0e8d8">
-          {{ bootRows }}
-          <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
-            <div style="flex:1;height:3px;background:rgba(240,232,216,.1);border-radius:99px;overflow:hidden"><div style="{{ bootBarStyle }}"></div></div>
-            <span style="font-size:11px;color:#9a8f7c;font-variant-numeric:tabular-nums;white-space:nowrap">{{ bootStatus }}</span>
+      <div class="masthead-right">
+        <button class="chip-btn clear-seals-btn" id="clearSealsBtn" type="button">清除印迹</button>
+        <button class="chip-btn" id="cmdBtn" type="button" title="快捷导航">⌘K</button>
+        <button class="chip-btn" id="langBtn" type="button">EN</button>
+      </div>
+    </header>
+
+    <!-- VIEW 1: HOME (Calm Sticky Split Layout) -->
+    <main id="view-home" class="view active">
+      <div class="split-layout">
+        <!-- Sticky Left Identity Column -->
+        <aside class="split-left">
+          <div>
+            <!-- Bespoke Architectural XL Emblem -->
+            <div class="identity-emblem" id="emblemBtn" title="点击轻推背景微粒">
+              <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <path d="M9 8.5V23.5H20" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M15.5 8.5L22.5 15.5" stroke="rgba(255,255,255,0.45)" stroke-width="1.6" stroke-linecap="round" />
+                <circle cx="22.5" cy="21" r="3" fill="#EF4444" />
+              </svg>
+            </div>
+
+            <h2 class="left-name">肖亮 · Liang</h2>
+            <div class="left-sub" id="leftSub">CS MASTER'S · AI ENGINEERING</div>
+            <p class="left-role" id="leftRole">
+              全栈开发者，写代码，也写字。专注 AI 应用开发与 Agent 工程。
+            </p>
+
+            <button class="now-pill" id="nowPill" type="button">
+              <span class="pulse-dot"></span>
+              <span id="nowText">在做一个新 App · 开放实习与校招</span>
+            </button>
           </div>
+
+          <nav class="sticky-nav" aria-label="Section Navigation">
+            <button class="snav-btn active" type="button" data-scroll="sec-about"><span class="snav-line"></span> 01 ABOUT</button>
+            <button class="snav-btn" type="button" data-scroll="sec-exp"><span class="snav-line"></span> 02 EXPERIENCE</button>
+            <button class="snav-btn" type="button" data-scroll="sec-proj"><span class="snav-line"></span> 03 PROJECTS</button>
+            <button class="snav-btn" type="button" data-scroll="sec-writing"><span class="snav-line"></span> 04 WRITING</button>
+          </nav>
+
+          <div class="left-cta-block">
+            <button class="primary-pill" id="copyEmailBtn" type="button">复制联系邮箱</button>
+            <div class="inline-links">
+              <a class="clean-link" href="https://github.com/xiaoliangao" target="_blank" rel="noopener">GitHub ↗</a>
+              <span class="pipe-sep" aria-hidden="true"></span>
+              <button class="clean-link" type="button" data-nav="resume">纸质简历</button>
+              <span class="pipe-sep" aria-hidden="true"></span>
+              <button class="clean-link" type="button" data-nav="guestbook">留言墙</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right Scrollable Content Column -->
+        <div class="split-right">
+          <!-- 01 ABOUT -->
+          <section class="right-sec" id="sec-about">
+            <h1 class="editorial-h1" id="heroH1">
+              把一闪而过，做成<em>一直在</em>。
+            </h1>
+            <p class="body-p" id="heroP1">
+              你好，我是<strong>肖亮（Liang）</strong>，全栈开发者，写代码，也写字。目前主攻 <strong>AI 应用开发</strong>：2026 年在杭州灵医科技独立落地了企业级 RAG 知识库问答系统，之后一个人做完了 TaskRAG，从架构、编码、测试到部署运维全程独立完成。
+            </p>
+            <p class="body-p" id="heroP2">
+              相比停留在演示阶段的概念 Demo，我更在意模型在真实场景里的稳定性：怎么降低幻觉、怎么缩短首字响应、怎么让普通用户不用学复杂指令也能顺畅用起来。目前正在寻找 <strong>AI 应用研发相关的实习与校招机会</strong>，下面是我近期的作品与技术复盘。
+            </p>
+          </section>
+
+          <!-- 02 EXPERIENCE -->
+          <section class="right-sec" id="sec-exp">
+            <div class="sec-bar">
+              <div class="sec-label">02 · EXPERIENCE &amp; EDUCATION</div>
+              <div class="sec-sub">履历</div>
+            </div>
+            <div class="dim-list" id="expList"></div>
+          </section>
+
+          <!-- 03 PROJECTS -->
+          <section class="right-sec" id="sec-proj">
+            <div class="sec-bar">
+              <div class="sec-label">03 · SELECTED PROJECTS</div>
+              <div class="sec-sub">作品</div>
+            </div>
+            <div class="filter-row" id="projFilter">
+              <button class="flt-btn active" type="button" data-filter="all">全部</button>
+              <button class="flt-btn" type="button" data-filter="ai">AI 应用</button>
+              <button class="flt-btn" type="button" data-filter="web">Web 工程</button>
+            </div>
+            <div class="dim-list" id="projList"></div>
+          </section>
+
+          <!-- 04 WRITING -->
+          <section class="right-sec" id="sec-writing" style="margin-bottom: 20px;">
+            <div class="sec-bar">
+              <div class="sec-label">04 · NOTES &amp; ESSAYS</div>
+              <div class="sec-sub">随笔</div>
+            </div>
+            <div class="writing-index" id="writingIndex"></div>
+          </section>
         </div>
       </div>
-    </sc-if>
-  </div>
+    </main>
 
-  <div style="max-width:1160px;margin:0 auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 40px;border-bottom:1px solid rgba(240,232,216,.1);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.16em;color:#9a8f7c">
-      <span>XIAOLIANG.HNYY.ONLINE</span>
-      <div style="display:flex;align-items:center;gap:16px">
-        <span style="display:inline-flex;border:1px solid rgba(240,232,216,.2);border-radius:99px;overflow:hidden">
-          <a href="#top" onClick="{{ setZh }}" style="{{ zhChip }}">中</a>
-          <a href="#top" onClick="{{ setEn }}" style="{{ enChip }}">EN</a>
-        </span>
-        <a href="#top" onClick="{{ replayBoot }}" style="color:#9a8f7c;cursor:pointer;transition:color .15s;letter-spacing:.16em" style-hover="color:#ff5230">↻ BOOT</a>
-        <a href="#top" onClick="{{ clockToggle }}" style="color:#ff5230;cursor:pointer;transition:opacity .15s" style-hover="opacity:.7">{{ clockText }}</a>
-      </div>
-    </div>
-
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:22px 40px 0">
-      <span style="font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:22px;font-weight:700">xiaoliang<span style="color:#ff5230">.</span></span>
-      <div style="display:flex;gap:28px;align-items:center;font-size:13px;color:#9a8f7c">
-        <a href="#timeline" style="transition:color .15s" style-hover="color:#f0e8d8"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ff5230">01</span> {{ nav1 }}</a>
-        <a href="留言墙.dc.html" style="transition:color .15s" style-hover="color:#f0e8d8"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ff5230">02</span> {{ nav2 }}</a>
-        <a href="简历CV.dc.html" style="transition:color .15s" style-hover="color:#f0e8d8"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#ff5230">03</span> {{ nav3 }}</a>
-        <a href="mailto:eangyang0504@gmail.com" style="color:#0d0b08;background:#ff5230;border-radius:99px;padding:7px 18px;font-weight:700;transition:all .15s" style-hover="background:#f0e8d8">联系 →</a>
-      </div>
-    </div>
-
-    <div style="position:relative;overflow:hidden;padding:64px 40px 56px">
-      <div style="position:relative;display:grid;grid-template-columns:1fr 280px;gap:48px;align-items:center">
+    <!-- VIEW 2: STAMP GUESTBOOK -->
+    <section id="view-guestbook" class="view">
+      <div class="gb-layout">
+        <form class="gb-form" id="gbForm">
+          <div class="sec-label" style="margin-bottom: 8px;">GUESTBOOK · 留言墙</div>
+          <p class="item-desc" style="margin-bottom: 16px;" id="gbIntro">
+            路过，留个爪印。匿名也行，会一直留着。
+          </p>
+          <label class="f-label" for="gbName">称呼 / NAME</label>
+          <input class="f-input" id="gbName" type="text" placeholder="名字（可空）" maxlength="24" autocomplete="nickname" />
+          <label class="f-label" for="gbMsg">内容 / MESSAGE</label>
+          <textarea class="f-area" id="gbMsg" rows="3" placeholder="想说的话 …（回车发送，Shift+回车换行）" maxlength="300"></textarea>
+          <button class="f-submit" type="submit" id="gbSubmitBtn">落印留言</button>
+          <div class="hp-field" aria-hidden="true">
+            <input name="website" tabindex="-1" autocomplete="off" id="gbHp" placeholder="website" />
+          </div>
+          <div class="gb-meta"><span id="gbFormMsg" role="status" aria-live="polite"></span><span id="gbCount">0 / 300</span></div>
+        </form>
         <div>
-          <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:118px;font-weight:700;line-height:.92;letter-spacing:-.02em;color:rgba(240,232,216,.07);-webkit-text-stroke:1.5px #f0e8d8"><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-4deg);color:#ff5230">X</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(3deg);color:#ff5230">I</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-3deg);color:#ff5230">A</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(4deg);color:#ff5230">O</span><br><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-4deg);color:#ff5230">L</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(3deg);color:#ff5230">I</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-3deg);color:#ff5230">A</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(4deg);color:#ff5230">N</span><span style="display:inline-block;transition:transform .18s,color .18s" style-hover="transform:translateY(-9px) rotate(-3deg);color:#ff5230">G</span></h1>
-          <sc-if value="{{ isZh }}" hint-placeholder-val="{{ true }}">
-            <p style="margin:32px 0 0;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:25px">把一闪而过，做成<span style="color:#ff5230;border-bottom:2px solid #ff5230;padding-bottom:1px">一直在</span>。</p>
-            <p style="margin:14px 0 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9a8f7c">全栈开发者 · 做能真正跑起来的 AI 应用</p>
-          </sc-if>
-          <sc-if value="{{ isEn }}" hint-placeholder-val="{{ false }}">
-            <p style="margin:32px 0 0;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:25px">Make the fleeting <span style="color:#ff5230;border-bottom:2px solid #ff5230;padding-bottom:1px">stay</span>.</p>
-            <p style="margin:14px 0 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#9a8f7c">FULL-STACK · AI APPS THAT ACTUALLY SHIP</p>
-          </sc-if>
-        </div>
-        <div onPointerEnter="{{ nowOn }}" onPointerLeave="{{ nowOff }}" style="position:relative;width:280px;height:330px">
-          <span style="position:absolute;inset:0;border-radius:150px 150px 22px 22px;border:1.5px solid rgba(255,82,48,.6);transform:translate(14px,14px);pointer-events:none"></span>
-          <div style="position:absolute;inset:0;border-radius:150px 150px 22px 22px;overflow:hidden;border:1.5px solid rgba(240,232,216,.25);background:#14100b">
-            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-avatar" shape="rect" fit="cover" placeholder="拖你的头像到这里" hint-size="280px,330px" style="position:absolute;inset:0"></x-import>
-          </div>
-          <span style="position:absolute;top:-26px;right:-26px;display:grid;place-items:center;pointer-events:none"><span style="font-size:54px;line-height:1;color:#ff5230;animation:spinSlow 12s linear infinite;text-shadow:0 0 26px rgba(255,82,48,.55)">✦</span></span>
-          <div style="{{ nowBubbleStyle }}">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:#ff5230;margin-bottom:10px">此刻 · NOW</div>
-            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:#c9c0ad;text-align:left">
-              <span><span style="font-family:'JetBrains Mono',monospace;color:#9a8f7c">做 →</span> 一个新 App</span>
-              <span><span style="font-family:'JetBrains Mono',monospace;color:#9a8f7c">听 →</span> Umbrella</span>
-              <span><span style="font-family:'JetBrains Mono',monospace;color:#9a8f7c">读 →</span> 《JavaAgent开发》</span>
-            </div>
-          </div>
-          <a href="#top" onClick="{{ nowToggle }}" style="position:absolute;left:50%;bottom:-19px;transform:translateX(-50%);white-space:nowrap;display:inline-flex;align-items:center;gap:9px;background:#14100b;border:1px solid rgba(240,232,216,.22);border-radius:99px;padding:8px 16px;font-size:12px;color:#c9c0ad;box-shadow:0 14px 34px rgba(0,0,0,.55);cursor:pointer;transition:border-color .2s" style-hover="border-color:rgba(255,82,48,.6)"><span style="width:7px;height:7px;border-radius:99px;background:#4a9e6b;animation:pulse 2s ease-in-out infinite"></span>{{ pillText }}</a>
+          <div class="stamp-grid" id="stampGrid"></div>
+          <div class="gb-more-wrap"><div class="gb-status" id="gbStatus">加载中 …</div>
+          <button class="p-ctrl" id="gbMoreBtn" type="button" style="display:none; margin-top:10px;">更多留言 ↓</button></div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div id="timeline" style="padding:0 40px 56px">
-      <div style="display:flex;align-items:baseline;gap:18px;padding:6px 0 24px;border-top:1px solid rgba(240,232,216,.1)">
-        <span style="font-family:'Space Grotesk',sans-serif;font-size:46px;font-weight:700;color:#ff5230">2026</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;color:#9a8f7c">{{ tlHeader }}</span>
-      </div>
-
-      <div style="display:grid;grid-template-columns:76px 24px 1fr;row-gap:0">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:24px;font-variant-numeric:tabular-nums">11-07</span>
-        <span style="position:relative"><span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:30px;width:10px;height:10px;border-radius:99px;background:#0d0b08;border:2px solid #ff5230;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,82,48,.6)"></span></span>
-        <a href="随笔-Vibe-Coding开发流程.dc.html" style="display:block;margin:0 0 20px 16px;background:#14100b;border:1px solid rgba(240,232,216,.13);border-radius:14px;padding:26px 30px;transition:transform .22s,box-shadow .22s,border-color .22s;transform-origin:left center" style-hover="transform:translateY(-4px) scale(1.015);box-shadow:0 24px 50px rgba(0,0,0,.6);border-color:rgba(255,82,48,.55)">
-          <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;border:1px solid rgba(240,232,216,.28);border-radius:99px;padding:3px 11px;color:#c9c0ad">随笔</span>
-            <span style="color:#ff5230;font-size:17px">↗</span>
-          </div>
-          <div style="margin-top:14px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700;line-height:1.6">一个人怎么做一个产品：Vibe Coding 的完整开发流程</div>
-          <div style="margin-top:10px;font-size:12px;color:#9a8f7c;font-family:'JetBrains Mono',monospace;letter-spacing:.06em">约 15 分钟 · Vibe Coding / AI 开发 / 方法论</div>
-        </a>
-
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:24px;font-variant-numeric:tabular-nums">07-12</span>
-        <span style="position:relative"><span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:30px;width:10px;height:10px;border-radius:99px;background:#0d0b08;border:2px solid #ff5230;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,82,48,.6)"></span></span>
-        <a href="随笔-开发流程.dc.html" style="display:block;margin:0 0 20px 16px;background:#14100b;border:1px solid rgba(240,232,216,.13);border-radius:14px;padding:26px 30px;transition:transform .22s,box-shadow .22s,border-color .22s;transform-origin:left center" style-hover="transform:translateY(-4px) scale(1.015);box-shadow:0 24px 50px rgba(0,0,0,.6);border-color:rgba(255,82,48,.55)">
-          <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;border:1px solid rgba(240,232,216,.28);border-radius:99px;padding:3px 11px;color:#c9c0ad">随笔</span>
-            <span style="color:#ff5230;font-size:17px">↗</span>
-          </div>
-          <div style="margin-top:14px;font-family:'LXGW WenKai','LXGW WenKai TC',serif;font-size:24px;font-weight:700;line-height:1.6">一个软件项目是怎么从想法走到上线的：完整的公司级开发流程</div>
-          <div style="margin-top:10px;font-size:12px;color:#9a8f7c;font-family:'JetBrains Mono',monospace;letter-spacing:.06em">约 15 分钟 · 项目管理 / 开发流程 / 方法论</div>
-        </a>
-
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:24px">{{ d2 }}</span>
-        <span style="position:relative"><span style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:30px;width:10px;height:10px;border-radius:99px;background:#ff5230;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,82,48,.6)"></span></span>
-        <div data-tilt="2" onPointerEnter="{{ projEnter }}" onPointerLeave="{{ projLeave }}" style="margin:0 0 20px 16px;perspective:1400px;height:252px">
-          <div style="{{ tilt2Style }}">
-          <div class="flip" style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.2,.7,.2,1)">
-            <div style="position:absolute;inset:0;backface-visibility:hidden;background:#14100b;border:1.5px solid rgba(240,232,216,.28);border-radius:14px;padding:26px 30px;display:flex;flex-direction:column;overflow:hidden">
-              <span style="position:absolute;right:14px;bottom:-28px;font-family:'Space Grotesk',sans-serif;font-size:130px;font-weight:700;color:rgba(240,232,216,.05);line-height:1;pointer-events:none">01</span>
-              <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;background:#ff5230;color:#0d0b08;border-radius:99px;padding:3px 11px;font-weight:700">运行中</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a8f7c">研究追踪 RAG 系统</span></div>
-              <span style="margin-top:16px;font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:700">TaskRAG</span>
-              <span style="margin-top:8px;font-size:14.5px;line-height:1.8;color:#c9c0ad;max-width:520px">每天替你读完 arXiv、HuggingFace、GitHub 的更新，按课题归档。你问，它带着出处答。</span>
-              <span style="margin-top:auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:#9a8f7c">悬停翻面 ↻ 技术栈 / 链接</span>
-            </div>
-            <div style="position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);background:#f0e8d8;color:#0d0b08;border-radius:14px;padding:26px 30px;display:flex;flex-direction:column">
-              <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Space Grotesk',sans-serif;font-size:23px;font-weight:700">TaskRAG</span><span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:#ff5230">RAG · 带引用问答</span></div>
-              <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px">
-                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">React</span>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">TypeScript</span>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">FastAPI</span>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">Qdrant</span>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">Celery</span>
-                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(13,11,8,.35);border-radius:99px;padding:4px 11px;font-weight:500">Docker</span>
-              </div>
-              <div style="margin-top:auto;display:flex;gap:12px">
-                <a href="https://taskrag.hnyy.online" target="_blank" style="font-size:13px;font-weight:700;background:#0d0b08;color:#f0e8d8;border-radius:99px;padding:9px 20px" style-hover="opacity:.85">在线体验 ↗</a>
-                <a href="https://github.com/xiaoliangao/taskRag" target="_blank" style="font-size:13px;font-weight:700;border:1.5px solid rgba(13,11,8,.4);color:#0d0b08;border-radius:99px;padding:9px 20px" style-hover="background:rgba(13,11,8,.08)">源码</a>
-              </div>
-            </div>
-          </div>
-          </div>
+    <!-- VIEW 3: PRINTABLE PAPER RESUME -->
+    <section id="view-resume" class="view">
+      <div class="paper-stage">
+        <div class="paper-stack">
+          <div class="paper-under" aria-hidden="true"></div>
+          <article class="paper-sheet" id="paperSheet">
+            <div id="paperBody"></div>
+            <div class="paper-seal" aria-hidden="true">Liang<span>XIAOLIANG</span></div>
+            <div class="p-num" id="paperNum">1 / 2</div>
+            <button class="page-curl" id="pageCurlBtn" type="button" title="点击右下角折页翻面" aria-label="Flip resume page"></button>
+          </article>
         </div>
-
-        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#9a8f7c;padding-top:16px">now</span>
-        <span style="position:relative"><span style="position:absolute;left:50%;top:0;height:22px;width:1px;background:rgba(240,232,216,.12)"></span><span style="position:absolute;left:50%;top:22px;width:10px;height:10px;border-radius:99px;background:#0d0b08;border:2px dashed #9a8f7c;transform:translateX(-50%)"></span></span>
-        <div style="padding:16px 0 0 30px;color:#9a8f7c;font-size:13.5px;font-family:'JetBrains Mono',monospace">{{ nowText }}<span style="display:inline-block;width:8px;height:1em;background:#ff5230;vertical-align:-2px;margin-left:6px;animation:blink 1.1s steps(1) infinite"></span></div>
+        <div class="paper-ctrls">
+          <button class="p-ctrl" id="resLangBtn" type="button">中文 / English</button>
+          <button class="p-ctrl" id="resFlipBtn" type="button">第 1 / 2 页 →</button>
+          <button class="p-ctrl primary" id="resPrintBtn" type="button">打印 / 导出 PDF</button>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <a href="mailto:eangyang0504@gmail.com" onClick="{{ mqClick }}" onPointerEnter="{{ mqEnter }}" onPointerLeave="{{ mqLeave }}" style="display:block;overflow:hidden;background:#ff5230;color:#0d0b08;transition:filter .2s" style-hover="filter:brightness(1.08)">
-      <div style="{{ mqStyle }}">
-        <span>一起做点有趣的事 ✦ GITHUB ✦ EANGYANG0504@GMAIL.COM ✦ CV ✦&nbsp;</span>
-        <span>一起做点有趣的事 ✦ GITHUB ✦ EANGYANG0504@GMAIL.COM ✦ CV ✦&nbsp;</span>
+    <footer class="site-footer">
+      <div class="footer-motto" id="footerMotto">“带着离开的决心，只为更好的归来。” · © 2026 Liang</div>
+      <button class="seal-cta" id="sealHintBtn" type="button">点击空白处可落「Liang」印章</button>
+    </footer>
+  </div>
+
+  <!-- Bottom Floating Capsule Dock + Castle in the Sky -->
+  <div class="dock-wrap">
+    <nav class="dock" aria-label="Primary Navigation">
+      <button class="dock-btn active" type="button" data-nav="home" id="dock-home">首页</button>
+      <button class="dock-btn" type="button" data-nav="guestbook" id="dock-guestbook">留言墙</button>
+      <button class="dock-btn" type="button" data-nav="resume" id="dock-resume">简历</button>
+    </nav>
+    <button class="sound-btn" id="soundBtn" type="button" title="播放 / 暂停《天空之城》" aria-label="Play or pause Castle in the Sky">
+      <span class="sound-bars">
+        <span class="s-bar"></span>
+        <span class="s-bar"></span>
+        <span class="s-bar"></span>
+        <span class="s-bar"></span>
+      </span>
+      <span class="sound-label" id="soundLabel">天空之城</span>
+    </button>
+  </div>
+
+  <!-- Command Palette (⌘K) -->
+  <div class="cmd-bg" id="cmdModal" role="dialog" aria-modal="true" aria-label="Command Palette">
+    <div class="cmd-box">
+      <div class="cmd-head">
+        <span>快捷导航 · QUICK JUMP</span>
+        <span>ESC</span>
       </div>
-    </a>
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 40px 24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a8f7c">
-      <span>© 2026 xiaoliang · Built with care</span>
-      <div style="display:flex;gap:18px">
-        <a href="https://github.com/xiaoliangao" target="_blank" style="transition:color .15s" style-hover="color:#ff5230">GitHub</a>
-        <a href="mailto:eangyang0504@gmail.com" style="transition:color .15s" style-hover="color:#ff5230">Email</a>
-        <a href="留言墙.dc.html" style="transition:color .15s" style-hover="color:#ff5230">留言墙</a>
-        <a href="简历CV.dc.html" style="transition:color .15s" style-hover="color:#ff5230">CV</a>
-        <a href="404.dc.html" style="transition:color .15s" style-hover="color:#ff5230">404</a>
+      <div class="cmd-list">
+        <button class="cmd-item" type="button" data-cmd="resume"><span>打开纸质简历（支持导出 PDF）</span><span class="cmd-key">R</span></button>
+        <button class="cmd-item" type="button" data-cmd="music"><span>播放 / 暂停《天空之城》</span><span class="cmd-key">M</span></button>
+        <button class="cmd-item" type="button" data-cmd="guestbook"><span>前往留言墙</span><span class="cmd-key">G</span></button>
+        <button class="cmd-item" type="button" data-cmd="seal"><span>在页面落一枚「Liang」印章</span><span class="cmd-key">S</span></button>
+        <button class="cmd-item" type="button" data-cmd="email"><span>复制联系邮箱</span><span class="cmd-key">C</span></button>
       </div>
     </div>
   </div>
-</div>
 
-</x-dc>
-<script type="text/x-dc" data-dc-script>
-const BOOT_C = { k: '#ff5230', s: '#4a9e6b', f: '#e5c07b', c: '#544c3e' };
-// [text, colorKey]; `pause` = extra typing units spent after the line (a beat on the OK / RUNNING lines)
-const BOOT_LINES = [
-  { tokens: [['import', 'k'], [' { xiaoliang } '], ['from', 'k'], [' '], ["'./2026'", 's']], pause: 6 },
-  { tokens: [['const', 'k'], [' site = '], ['await', 'k'], [' '], ['build', 'f'], ['({ 有趣: '], ['true', 'k'], [' })']], badge: ['OK', 'g'], pause: 18 },
-  { tokens: [['site.'], ['mount', 'f'], ['('], ["'timeline'", 's'], [')']], pause: 6 },
-  { tokens: [['site.'], ['mount', 'f'], ['('], ["'guestbook'", 's'], [')']], pause: 6 },
-  { tokens: [['site.'], ['listen', 'f'], ['('], ['443', 's'], [') '], ['// ✦ 一直在', 'c']], badge: ['RUNNING', 'o'], pause: 18 },
-  { tokens: [['export default xiaoliang', 'c']], pause: 0 }
-];
-const BOOT_OFFSETS = [];
-let BOOT_UNITS = 0;
-for (const l of BOOT_LINES) {
-  l.len = l.tokens.reduce((n, t) => n + t[0].length, 0);
-  BOOT_OFFSETS.push(BOOT_UNITS);
-  BOOT_UNITS += l.len + l.pause;
-}
-const BOOT_TYPE_MS = 1700;
-const BOOT_PHASES = ['resolving', 'building', 'mounting timeline', 'mounting guestbook', 'listening :443', 'exporting'];
 
-class Component extends DCLogic {
-  state = {
-    lang: 'zh',
-    boot: true, bootTyped: 0, bootP: 0, bootMs: 0,
-    t: '',
-    clockMode: 'time',
-    cur: { x: 0, y: 0, big: false, on: false },
-    nowOpen: false,
-    tilt1: { rx: 0, ry: 0 },
-    tilt2: { rx: 0, ry: 0 },
-    hovP: 0,
-    mqHover: false,
-    mqLock: false
-  };
+  <script>
+    (function () {
+      const state = {
+        view: 'home',
+        lang: 'zh',
+        nowIdx: 0,
+        projFilter: 'all',
+        expandedProj: {},
+        resumePage: 1,
+        musicPlaying: false,
+        sealCount: 0,
+        beatPulse: 0
+      };
 
-  componentDidMount() {
-    const tick = () => {
-      const d = new Date();
-      const p = (n) => String(n).padStart(2, '0');
-      this.setState({ t: p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) });
-    };
-    tick();
-    this._tick = setInterval(tick, 1000);
-    // progress only reaches 100% once fonts + page assets are really loaded (capped at 4s)
-    this._assetsReady = false;
-    const loaded = document.readyState === 'complete' ? null : new Promise((r) => addEventListener('load', r, { once: true }));
-    Promise.race([
-      Promise.all([document.fonts ? document.fonts.ready : null, loaded]),
-      new Promise((r) => setTimeout(r, 4000))
-    ]).then(() => { this._assetsReady = true; });
-    let booted = false;
-    try { booted = sessionStorage.getItem('xl-booted') === '1'; } catch (_) {}
-    if (booted) this.setState({ boot: false });
-    else this.startBoot();
-  }
-  componentWillUnmount() { clearInterval(this._tick); clearTimeout(this._bt); cancelAnimationFrame(this._raf); }
+      const nowList = {
+        zh: [
+          '在做一个新 App · 开放实习与校招',
+          '听 Umbrella · 读《JavaAgent开发》',
+          '下一站：一个 App，编译中'
+        ],
+        en: [
+          'Building a new app · Open to internships & grad roles',
+          'Listening to Umbrella · Reading JavaAgent Development',
+          'Next stop: an app, compiling'
+        ]
+      };
 
-  startBoot() {
-    cancelAnimationFrame(this._raf);
-    clearTimeout(this._bt);
-    const t0 = performance.now();
-    let shown = 0;
-    const step = (now) => {
-      const el = now - t0;
-      const typed = Math.min(BOOT_UNITS, (el / BOOT_TYPE_MS) * BOOT_UNITS);
-      const target = Math.min(typed / BOOT_UNITS, this._assetsReady ? 1 : 0.92);
-      shown += (target - shown) * 0.14;
-      if (target - shown < 0.003) shown = target;
-      if (shown >= 1) {
-        this.setState({ boot: true, bootTyped: BOOT_UNITS, bootP: 1, bootMs: el });
-        this._bt = setTimeout(this.finishBoot, 700);
-        return;
+      const experiences = [
+        {
+          date: '2026.03 — 06',
+          titleZh: 'AI 应用开发实习生 · 杭州灵医科技',
+          titleEn: 'AI Application Engineering Intern · Lingyi Technology, Hangzhou',
+          descZh: '独立设计并落地企业级 RAG 知识库问答系统：离线索引 + 在线查询双管道，混合检索 + RRF 融合 + Reranker 精排 + SSE 流式生成。标准问题集 Hit Rate 72%→87%，引用溯源 Faithfulness 0.68→0.91。',
+          descEn: 'Designed and shipped an enterprise RAG knowledge-base Q&A system: offline indexing + online retrieval, hybrid search + RRF fusion + reranking + SSE streaming. Hit Rate 72%→87%, Faithfulness 0.68→0.91 on the standard set.',
+          tags: ['RAG', 'RRF', 'Reranker', 'SSE', 'Python']
+        },
+        {
+          date: '2026.06 — 至今',
+          titleZh: '独立开发 · 个人项目',
+          titleEn: 'Independent Developer · Personal Projects',
+          descZh: '一个人做完线上产品 TaskRAG：从架构、编码、测试到 Docker + Nginx + HTTPS 部署运维，全程独立完成；现在在做一个新 App。',
+          descEn: 'Shipped TaskRAG end to end solo — architecture, code, tests, and Docker + Nginx + HTTPS operations; now building a new app.',
+          tags: ['TaskRAG', 'FastAPI', 'Qdrant', 'Docker']
+        }
+      ];
+
+      const projects = [
+        {
+          id: 'p1', cat: 'ai', year: '2026',
+          titleZh: '企业级 RAG 知识库问答系统',
+          titleEn: 'Enterprise RAG Knowledge-Base Q&A',
+          descZh: '在杭州灵医科技实习期间独立落地的问答系统：离线索引 + 在线查询双管道，混合检索 + RRF 融合 + Reranker 精排 + SSE 流式生成，覆盖降级、多租户权限隔离与成本控制。',
+          descEn: 'An enterprise Q&A system shipped during my internship at Lingyi Technology: dual offline-indexing / online-retrieval pipelines, hybrid search + RRF + reranking + SSE streaming, with fallbacks, multi-tenant isolation and cost controls.',
+          stack: ['RAG', 'RRF', 'Reranker', 'SSE', 'Python'],
+          detailZh: '标准问题集 Hit Rate 72%→87%，引用溯源 Faithfulness 0.68→0.91。',
+          detailEn: 'Hit Rate 72%→87% and Faithfulness 0.68→0.91 on the standard question set.'
+        },
+        {
+          id: 'p2', cat: 'ai', year: '2026',
+          titleZh: 'TaskRAG · 研究追踪 RAG 系统',
+          titleEn: 'TaskRAG · Research-Tracking RAG',
+          descZh: '每天替你读完 arXiv、HuggingFace、GitHub 的更新，按课题归档。你问，它带着出处答。',
+          descEn: 'Reads arXiv, HuggingFace and GitHub updates for you every day, filed by topic. Ask it, and it answers with citations.',
+          stack: ['React', 'TypeScript', 'FastAPI', 'Qdrant', 'Celery', 'Docker'],
+          detailZh: '在线体验：taskrag.hnyy.online；源码：github.com/xiaoliangao/taskRag。',
+          detailEn: 'Live at taskrag.hnyy.online; source at github.com/xiaoliangao/taskRag.'
+        },
+        {
+          id: 'p3', cat: 'web', year: '2026',
+          titleZh: 'xiaoliang.hnyy.online · 个人主页与简历系统',
+          titleEn: 'xiaoliang.hnyy.online · Personal Site & Printable CV',
+          descZh: '零前端框架依赖的轻量个人站点。采用克制的双栏阅读流、轻量 WebGL 微粒光环、印章留言墙以及适配 A4 导出的独立白纸简历。',
+          descEn: 'Zero-framework personal website combining a calm split layout, subtle WebGL ring particles, stamp guestbook, and A4 print-ready CV.',
+          stack: ['WebGL Shader', 'Web Audio API', 'CSS Grid', 'Print CSS'],
+          detailZh: '内置 Web Audio 实时合成的八音盒版《天空之城》与 ⌘K 快捷指令面板，兼顾阅读体验与招聘实用性。',
+          detailEn: 'Includes a live Web Audio music-box rendition of Castle in the Sky and a ⌘K quick-jump menu.'
+        }
+      ];
+
+      const articles = [
+        {
+          id: 'a1', num: '01', dateZh: '2026.11 · 约 15 分钟', dateEn: 'NOV 2026 · ~15 MIN',
+          titleZh: '一个人怎么做一个产品：Vibe Coding 的完整开发流程',
+          titleEn: 'How One Person Ships a Product: The Complete Vibe Coding Workflow',
+          href: '随笔-Vibe-Coding开发流程.dc.html'
+        },
+        {
+          id: 'a2', num: '02', dateZh: '2026.07 · 约 15 分钟', dateEn: 'JUL 2026 · ~15 MIN',
+          titleZh: '一个软件项目是怎么从想法走到上线的：完整的公司级开发流程',
+          titleEn: 'From Idea to Launch: The Full Company-Grade Software Workflow',
+          href: '随笔-开发流程.dc.html'
+        }
+      ];
+
+      /* ---- Guestbook (server-backed: GET/POST /api/guestbook) ---- */
+      const GB_API = '/api/guestbook';
+      const GB_PAGE = 30;
+      const GB_NAME_MAX = 24;
+      const GB_TEXT_MAX = 300;
+      const gbLen = (s) => Array.from(s).length;
+      let gbList = [], gbTotal = null, gbHasMore = false, gbLoading = false, gbLoadingMore = false, gbPosting = false;
+
+      async function gbFetch(url, opts) {
+        let res;
+        try {
+          res = await fetch(url, { cache: 'no-store', ...opts, headers: { Accept: 'application/json', ...(opts && opts.headers) } });
+        } catch (_) {
+          return { ok: false, status: 0, data: { message: '网络好像断了，稍后再试' } };
+        }
+        let data = null;
+        try { data = await res.json(); } catch (_) {}
+        return { ok: res.ok, status: res.status, data: data || {} };
       }
-      this.setState({ boot: true, bootTyped: typed, bootP: shown, bootMs: 0 });
-      this._raf = requestAnimationFrame(step);
-    };
-    this.setState({ boot: true, bootTyped: 0, bootP: 0, bootMs: 0 });
-    this._raf = requestAnimationFrame(step);
-  }
-  finishBoot = () => {
-    cancelAnimationFrame(this._raf);
-    clearTimeout(this._bt);
-    this.setState({ boot: false });
-    try { sessionStorage.setItem('xl-booted', '1'); } catch (_) {}
-  };
-  skipBoot = () => { if (this.state.boot) this.finishBoot(); };
 
-  bootRows() {
-    const h = React.createElement;
-    const typed = this.state.bootTyped;
-    const rowBase = { display: 'flex', alignItems: 'center', padding: '1px 10px', margin: '0 -10px', borderRadius: '6px', minHeight: '1.9em' };
-    const rows = [];
-    let cursorPlaced = false;
-    BOOT_LINES.forEach((line, i) => {
-      const n = Math.floor(typed - BOOT_OFFSETS[i]);
-      if (n < 0) return;
-      const done = n >= line.len;
-      let left = Math.min(n, line.len);
-      const spans = [];
-      line.tokens.forEach(([txt, c], j) => {
-        if (left <= 0) return;
-        const part = txt.slice(0, left);
-        left -= part.length;
-        spans.push(h('span', { key: j, style: c ? { color: BOOT_C[c] } : null }, part));
+      function gbWhen(iso, now) {
+        const d = new Date(iso);
+        if (isNaN(d)) return { d: '', full: '' };
+        const p = (n) => String(n).padStart(2, '0');
+        const full = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+        const sec = Math.max(0, (now - d.getTime()) / 1000);
+        let rel;
+        if (sec < 60) rel = '刚刚';
+        else if (sec < 3600) rel = Math.floor(sec / 60) + ' 分钟前';
+        else if (sec < 86400) rel = Math.floor(sec / 3600) + ' 小时前';
+        else if (sec < 7 * 86400) rel = Math.floor(sec / 86400) + ' 天前';
+        else if (d.getFullYear() === new Date(now).getFullYear()) rel = p(d.getMonth() + 1) + '-' + p(d.getDate());
+        else rel = full.slice(0, 10);
+        return { d: rel, full };
+      }
+
+      function gbStatusLine() {
+        const el = document.getElementById('gbStatus');
+        if (!el) return;
+        if (gbLoading && !gbList.length) { el.textContent = '加载中 …'; el.style.cursor = ''; el.onclick = null; }
+        else if (gbList.length === 0) { el.textContent = '还没有人留言，第一条留给你'; el.style.cursor = ''; el.onclick = null; }
+        else { el.textContent = '共 ' + (gbTotal == null ? gbList.length : gbTotal) + ' 条'; el.style.cursor = ''; el.onclick = null; }
+      }
+
+      async function gbLoad(more) {
+        if (more) { if (gbLoadingMore) return; gbLoadingMore = true; }
+        else gbLoading = true;
+        gbStatusLine();
+        const before = more && gbList.length ? '&before=' + gbList[gbList.length - 1].id : '';
+        const r = await gbFetch(GB_API + '?limit=' + GB_PAGE + before);
+        if (!r.ok || !Array.isArray(r.data.items)) {
+          gbLoading = false; gbLoadingMore = false;
+          const el = document.getElementById('gbStatus');
+          if (el) { el.textContent = '留言加载失败 · 点这里重试'; el.style.cursor = 'pointer'; el.onclick = () => gbLoad(false); }
+          return;
+        }
+        const cur = more ? gbList : [];
+        const seen = new Set(cur.map((m) => m.id));
+        gbList = cur.concat(r.data.items.filter((m) => !seen.has(m.id)));
+        gbHasMore = !!r.data.has_more;
+        gbTotal = typeof r.data.total === 'number' ? r.data.total : gbTotal;
+        gbLoading = false; gbLoadingMore = false;
+        renderStamps();
+      }
+
+      /* ---- Toast & Clipboard ---- */
+      let tTimer = null;
+      function toast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(tTimer);
+        tTimer = setTimeout(() => el.classList.remove('show'), 2200);
+      }
+
+      function copyEmail() {
+        const mail = 'eangyang0504@gmail.com';
+        const ok = state.lang === 'zh' ? '已复制联系邮箱：' + mail : 'Copied: ' + mail;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(mail).then(() => toast(ok)).catch(() => fallbackCopy(mail, ok));
+        } else {
+          fallbackCopy(mail, ok);
+        }
+      }
+      function fallbackCopy(text, ok) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+        toast(ok);
+      }
+
+      /* ================================================================
+         WEB AUDIO: CASTLE IN THE SKY (天空之城) MUSIC BOX
+      ================================================================ */
+      let audioCtx = null, masterGain = null, musicTimer = null, noteStep = 0;
+
+      const NOTE_FREQ = {
+        'E3': 164.81, 'F3': 174.61, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00, 'B3': 246.94,
+        'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+        'G#4': 415.30, 'A4': 440.00, 'B4': 493.88,
+        'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99
+      };
+
+      const SKY_SCORE = [
+        ['A4', null, 1], ['B4', null, 1],
+        ['C5', 'A3', 3], ['B4', null, 1], ['C5', 'E4', 2], ['E5', null, 2],
+        ['B4', 'E3', 6], ['E4', 'B3', 2],
+        ['A4', 'F3', 3], ['G4', null, 1], ['A4', 'C4', 2], ['C5', null, 2],
+        ['G4', 'C4', 6], ['E4', 'G3', 2],
+        ['F4', 'D4', 3], ['E4', null, 1], ['F4', 'A3', 2], ['C5', null, 2],
+        ['E4', 'A3', 6], ['C5', null, 1], ['C5', null, 1],
+        ['B4', 'B3', 3], ['F#4', null, 1], ['F#4', 'B3', 2], ['B4', null, 2],
+        ['B4', 'E3', 6], ['A4', null, 1], ['B4', null, 1],
+        ['C5', 'A3', 3], ['B4', null, 1], ['C5', 'E4', 2], ['E5', null, 2],
+        ['B4', 'E3', 6], ['E4', 'B3', 2],
+        ['A4', 'F3', 3], ['G4', null, 1], ['A4', 'C4', 2], ['C5', null, 2],
+        ['G4', 'C4', 6], ['E4', 'G3', 2],
+        ['F4', 'D4', 2], ['C5', null, 2], ['B4', 'G3', 2], ['C5', null, 2],
+        ['D5', 'B3', 2], ['E5', null, 1], ['C5', 'A3', 5],
+        ['C5', 'F3', 1], ['B4', null, 1], ['A4', 'D4', 2], ['B4', 'E3', 2], ['G#4', 'E4', 2],
+        ['A4', 'A3', 8], [null, null, 2]
+      ];
+
+      function ensureAudio() {
+        if (!audioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return;
+          audioCtx = new AC();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.value = 0.68;
+          masterGain.connect(audioCtx.destination);
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      }
+
+      function playMusicBoxNote(freq, durSec, volume, isBass) {
+        if (!audioCtx || !masterGain || !freq) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const over = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        osc.type = isBass ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        over.type = 'sine';
+        over.frequency.setValueAtTime(freq * 2, now);
+
+        const overGain = audioCtx.createGain();
+        overGain.gain.value = isBass ? 0.07 : 0.18;
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(isBass ? 680 : 2400, now);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(volume, now + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + Math.max(0.55, durSec * 1.45));
+
+        osc.connect(filter);
+        over.connect(overGain);
+        overGain.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+
+        osc.start(now);
+        over.start(now);
+        const stopAt = now + Math.max(0.6, durSec * 1.5);
+        osc.stop(stopAt);
+        over.stop(stopAt);
+      }
+
+      function scheduleNextSkyNote() {
+        if (!state.musicPlaying) return;
+        const item = SKY_SCORE[noteStep % SKY_SCORE.length];
+        noteStep = (noteStep + 1) % SKY_SCORE.length;
+
+        const unitMs = 265;
+        const durSec = (item[2] * unitMs) / 1000;
+
+        if (item[0] && NOTE_FREQ[item[0]]) {
+          playMusicBoxNote(NOTE_FREQ[item[0]], durSec, 0.13, false);
+          state.beatPulse = 0.7;
+        }
+        if (item[1] && NOTE_FREQ[item[1]]) {
+          playMusicBoxNote(NOTE_FREQ[item[1]], durSec * 1.3, 0.07, true);
+        }
+
+        musicTimer = setTimeout(scheduleNextSkyNote, item[2] * unitMs);
+      }
+
+      function toggleMusic() {
+        ensureAudio();
+        state.musicPlaying = !state.musicPlaying;
+        document.getElementById('soundBtn').classList.toggle('playing', state.musicPlaying);
+
+        if (state.musicPlaying) {
+          clearTimeout(musicTimer);
+          scheduleNextSkyNote();
+          toast(state.lang === 'zh' ? '正在播放：天空之城' : 'Playing: Castle in the Sky');
+        } else {
+          clearTimeout(musicTimer);
+          toast(state.lang === 'zh' ? '已暂停音乐' : 'Music paused');
+        }
+      }
+
+      function playStampSound() {
+        if (!audioCtx || audioCtx.state !== 'running') return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(52, now + 0.08);
+        g.gain.setValueAtTime(0.09, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.10);
+        osc.connect(g);
+        g.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.11);
+      }
+
+      /* ================================================================
+         RESTRAINED, AIRY WEBGL RING-PARTICLE ENGINE
+         - ~1,350 sparse particles (~36px spacing — 82% fewer than before!)
+         - Barely-visible 1px cool-grey dots at rest (90%+ pure white space)
+         - Soft, understated cursor-following breathing ring where only
+           a delicate band of small 3px–6px capsules gently blooms in
+           muted cobalt blue & warm vermilion
+      ================================================================ */
+      const canvas = document.getElementById('subtleRingCanvas');
+      let gl = null, ctx2d = null, program = null, vbo = null, uResLoc = null, uDprLoc = null;
+      let cw = 0, ch = 0, dpr = 1, count = 0;
+      let homeX, homeY, posX, posY, velX, velY, pDepth, pSeed, gpuData;
+
+      const pointer = { x: -999, y: -999, active: false, lastMoveAt: 0 };
+      const ring = { x: 0, y: 0, initialized: false };
+      let simTime = 0;
+
+      function initWebGL() {
+        try {
+          gl = canvas.getContext('webgl', { alpha: false, antialias: true, depth: false, premultipliedAlpha: false });
+        } catch (e) { gl = null; }
+        if (!gl) {
+          ctx2d = canvas.getContext('2d');
+          return;
+        }
+
+        const vsSrc = `
+          attribute vec2 a_pos;
+          attribute vec2 a_vel;
+          attribute vec2 a_meta;
+          uniform vec2 u_res;
+          uniform float u_dpr;
+          varying float v_angle;
+          varying float v_energy;
+          varying float v_hue;
+
+          void main() {
+            vec2 clip = (a_pos / u_res) * 2.0 - 1.0;
+            gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
+            v_angle = a_vel.x;
+            v_energy = a_vel.y;
+            v_hue = a_meta.x;
+            float depth = a_meta.y;
+            // Restrained sprite size: 2.2px at rest -> max 10.5px on active ring
+            float sz = mix(2.2, 10.5 * depth, smoothstep(0.05, 0.95, v_energy));
+            gl_PointSize = sz * u_dpr;
+          }
+        `;
+
+        const fsSrc = `
+          precision mediump float;
+          varying float v_angle;
+          varying float v_energy;
+          varying float v_hue;
+
+          vec3 subtlePalette(float t) {
+            // Calm, tasteful 3-tone palette: Cobalt (#2C64ED), Soft Indigo (#6366F1), Vermilion (#D9381A)
+            vec3 c0 = vec3(0.173, 0.392, 0.929);
+            vec3 c1 = vec3(0.388, 0.400, 0.945);
+            vec3 c2 = vec3(0.851, 0.220, 0.102);
+            float f = fract(t) * 3.0;
+            if (f < 1.0) return mix(c0, c1, smoothstep(0.0, 1.0, f));
+            if (f < 2.0) return mix(c1, c2, smoothstep(0.0, 1.0, f - 1.0));
+            return mix(c2, c0, smoothstep(0.0, 1.0, f - 2.0));
+          }
+
+          void main() {
+            vec2 uv = gl_PointCoord - 0.5;
+            float c = cos(v_angle);
+            float s = sin(v_angle);
+            vec2 p = vec2(c * uv.x + s * uv.y, -s * uv.x + c * uv.y);
+
+            float act = smoothstep(0.08, 0.90, v_energy);
+            float halfLen = mix(0.0, 0.25, act);
+            float radius  = mix(0.19, 0.11, act);
+
+            vec2 q = vec2(p.x - clamp(p.x, -halfLen, halfLen), p.y);
+            float d = length(q) - radius;
+            float aa = mix(0.10, 0.045, act);
+            float alphaMask = 1.0 - smoothstep(-aa, aa, d);
+            if (alphaMask < 0.01) discard;
+
+            vec3 baseGrey = vec3(0.74, 0.78, 0.84);
+            vec3 vivid = subtlePalette(v_hue);
+            float colorMix = smoothstep(0.10, 0.40, v_energy);
+            vec3 col = mix(baseGrey, vivid, colorMix);
+            // Whisper-quiet 0.22 opacity at rest, soft 0.68 max on ring
+            float alpha = alphaMask * mix(0.22, 0.68, smoothstep(0.06, 0.60, v_energy));
+            gl_FragColor = vec4(col, alpha);
+          }
+        `;
+
+        function compile(type, src) {
+          const sh = gl.createShader(type);
+          gl.shaderSource(sh, src);
+          gl.compileShader(sh);
+          if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) return null;
+          return sh;
+        }
+
+        const vs = compile(gl.VERTEX_SHADER, vsSrc);
+        const fs = compile(gl.FRAGMENT_SHADER, fsSrc);
+        if (!vs || !fs) { gl = null; ctx2d = canvas.getContext('2d'); return; }
+
+        program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { gl = null; ctx2d = canvas.getContext('2d'); return; }
+
+        gl.useProgram(program);
+        vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+
+        const stride = 6 * 4;
+        const locPos = gl.getAttribLocation(program, 'a_pos');
+        const locVel = gl.getAttribLocation(program, 'a_vel');
+        const locMeta = gl.getAttribLocation(program, 'a_meta');
+        gl.enableVertexAttribArray(locPos);
+        gl.vertexAttribPointer(locPos, 2, gl.FLOAT, false, stride, 0);
+        gl.enableVertexAttribArray(locVel);
+        gl.vertexAttribPointer(locVel, 2, gl.FLOAT, false, stride, 8);
+        gl.enableVertexAttribArray(locMeta);
+        gl.vertexAttribPointer(locMeta, 2, gl.FLOAT, false, stride, 16);
+
+        uResLoc = gl.getUniformLocation(program, 'u_res');
+        uDprLoc = gl.getUniformLocation(program, 'u_dpr');
+
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      }
+
+      function buildParticles() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cw = window.innerWidth;
+        ch = window.innerHeight;
+        canvas.width = Math.round(cw * dpr);
+        canvas.height = Math.round(ch * dpr);
+
+        if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+        else if (ctx2d) ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        if (!ring.initialized) {
+          ring.x = cw * 0.62;
+          ring.y = ch * 0.38;
+          ring.initialized = true;
+        }
+
+        // Sparse, generous spacing (~36px -> ~1,100–1,400 particles total!)
+        const area = cw * ch;
+        const step = Math.max(35, Math.sqrt(area / 1350));
+        const cols = Math.ceil(cw / step) + 1;
+        const rows = Math.ceil(ch / step) + 1;
+        count = cols * rows;
+
+        homeX = new Float32Array(count);
+        homeY = new Float32Array(count);
+        posX = new Float32Array(count);
+        posY = new Float32Array(count);
+        velX = new Float32Array(count);
+        velY = new Float32Array(count);
+        pDepth = new Float32Array(count);
+        pSeed = new Float32Array(count);
+        gpuData = new Float32Array(count * 6);
+
+        let idx = 0;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const jx = (Math.random() - 0.5) * step * 0.65;
+            const jy = (Math.random() - 0.5) * step * 0.65;
+            const ox = c * step + step * 0.5 + jx;
+            const oy = r * step + step * 0.5 + jy;
+            homeX[idx] = ox;
+            homeY[idx] = oy;
+            posX[idx] = ox;
+            posY[idx] = oy;
+            pDepth[idx] = 0.75 + Math.random() * 0.45;
+            pSeed[idx] = Math.random();
+            idx++;
+          }
+        }
+      }
+
+      function triggerGentleRipple(cx, cy) {
+        const rad = 240;
+        for (let i = 0; i < count; i++) {
+          const dx = posX[i] - cx;
+          const dy = posY[i] - cy;
+          const dist = Math.hypot(dx, dy);
+          if (dist < rad && dist > 0.1) {
+            const f = Math.pow(1 - dist / rad, 1.4);
+            velX[i] += (dx / dist) * f * 6.5 * pDepth[i];
+            velY[i] += ((dy / dist) * f * 6.5 - f * 2.0) * pDepth[i];
+          }
+        }
+      }
+
+      function stepAndRender() {
+        simTime += 0.013;
+        state.beatPulse *= 0.92;
+
+        const nowMs = performance.now();
+        let targetX, targetY;
+        if (pointer.active && (nowMs - pointer.lastMoveAt < 4500)) {
+          targetX = pointer.x;
+          targetY = pointer.y;
+        } else {
+          targetX = cw * 0.58 + Math.sin(simTime * 0.42) * (cw * 0.14);
+          targetY = ch * 0.44 + Math.cos(simTime * 0.31) * (ch * 0.10);
+        }
+        ring.x += (targetX - ring.x) * 0.032;
+        ring.y += (targetY - ring.y) * 0.032;
+
+        const minDim = Math.min(cw, ch);
+        const baseR = minDim * (0.24 + 0.024 * Math.sin(simTime * 1.1) + state.beatPulse * 0.022);
+        const invInnerVar = 1 / (2 * (minDim * 0.055) * (minDim * 0.055));
+        const invOuterVar = 1 / (2 * (minDim * 0.095) * (minDim * 0.095));
+        const dispAmp = minDim * 0.036;
+
+        const s1 = simTime * 1.0, s2 = simTime * 1.4;
+        const hueShift = simTime * 0.03;
+
+        for (let i = 0; i < count; i++) {
+          const ox = homeX[i];
+          const oy = homeY[i];
+          const depth = pDepth[i];
+
+          const dx = ox - ring.x;
+          const dy = oy - ring.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) + 0.0001;
+          const theta = Math.atan2(dy, dx);
+
+          const warp = Math.sin(theta * 3.0 + s1) * 18.0 + Math.cos(theta * 4.0 - s2) * 10.0;
+          const delta = dist - (baseR + warp);
+          const band = Math.exp(-(delta * delta) * (delta < 0 ? invInnerVar : invOuterVar));
+
+          let tx = ox;
+          let ty = oy;
+          let energy = 0;
+
+          if (band > 0.02) {
+            const invD = 1.0 / dist;
+            const push = band * dispAmp * depth;
+            tx += dx * invD * push;
+            ty += dy * invD * push - band * 5.0 * depth;
+            energy = band * 0.88;
+          }
+
+          let vx = (velX[i] + (tx - posX[i]) * 0.07) * 0.86;
+          let vy = (velY[i] + (ty - posY[i]) * 0.07) * 0.86;
+          const px = posX[i] + vx;
+          const py = posY[i] + vy;
+
+          velX[i] = vx;
+          velY[i] = vy;
+          posX[i] = px;
+          posY[i] = py;
+
+          const speed = Math.sqrt(vx * vx + vy * vy);
+          const totalE = Math.min(1.0, Math.max(energy, speed * 0.16));
+          const ang = speed > 0.2 ? Math.atan2(vy, vx) : theta;
+          const hue = (theta / 6.2831853) + 0.5 + hueShift + pSeed[i] * 0.06;
+
+          const base = i * 6;
+          gpuData[base]     = px;
+          gpuData[base + 1] = py;
+          gpuData[base + 2] = ang;
+          gpuData[base + 3] = totalE;
+          gpuData[base + 4] = hue;
+          gpuData[base + 5] = depth;
+        }
+
+        if (gl) {
+          gl.clearColor(1.0, 1.0, 1.0, 1.0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.useProgram(program);
+          gl.uniform2f(uResLoc, cw, ch);
+          gl.uniform1f(uDprLoc, dpr);
+          gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+          gl.bufferData(gl.ARRAY_BUFFER, gpuData, gl.DYNAMIC_DRAW);
+          gl.drawArrays(gl.POINTS, 0, count);
+        } else if (ctx2d) {
+          ctx2d.fillStyle = '#ffffff';
+          ctx2d.fillRect(0, 0, cw, ch);
+          for (let i = 0; i < count; i++) {
+            const b = i * 6;
+            const e = gpuData[b + 3];
+            ctx2d.fillStyle = e > 0.2 ? 'rgba(37,99,235,0.45)' : 'rgba(156,163,175,0.25)';
+            ctx2d.fillRect(gpuData[b], gpuData[b + 1], e > 0.2 ? 2.4 : 1.1, e > 0.2 ? 2.4 : 1.1);
+          }
+        }
+
+        requestAnimationFrame(stepAndRender);
+      }
+
+      /* ---- Personal Vermilion Seal ("Liang") ---- */
+      function placeSeal(x, y) {
+        const overlay = document.getElementById('stampOverlay');
+        if (overlay.children.length >= 10) overlay.removeChild(overlay.firstChild);
+
+        const el = document.createElement('div');
+        el.className = 'floating-seal';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.setProperty('--rot', (Math.random() * 10 - 5).toFixed(1) + 'deg');
+        el.textContent = 'Liang';
+        overlay.appendChild(el);
+
+        state.sealCount++;
+        document.getElementById('clearSealsBtn').classList.add('visible');
+        triggerGentleRipple(x, y);
+        playStampSound();
+      }
+
+      function clearSeals() {
+        document.getElementById('stampOverlay').innerHTML = '';
+        state.sealCount = 0;
+        document.getElementById('clearSealsBtn').classList.remove('visible');
+        toast(state.lang === 'zh' ? '已清除印迹' : 'Cleared seals');
+      }
+
+      /* ---- Command Palette ---- */
+      function toggleCmd(force) {
+        const modal = document.getElementById('cmdModal');
+        const open = typeof force === 'boolean' ? force : !modal.classList.contains('open');
+        modal.classList.toggle('open', open);
+      }
+
+      /* ---- Renderers ---- */
+      function renderExperience() {
+        const isZh = state.lang === 'zh';
+        document.getElementById('expList').innerHTML = experiences.map(ex => `
+          <article class="dim-item">
+            <div class="item-date">${ex.date}</div>
+            <div>
+              <div class="item-title">${isZh ? ex.titleZh : ex.titleEn}</div>
+              <p class="item-desc">${isZh ? ex.descZh : ex.descEn}</p>
+              <div class="tag-row">${ex.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+            </div>
+          </article>
+        `).join('');
+      }
+
+      function renderProjects() {
+        const isZh = state.lang === 'zh';
+        const list = state.projFilter === 'all' ? projects : projects.filter(p => p.cat === state.projFilter);
+        document.getElementById('projList').innerHTML = list.map(p => {
+          const open = !!state.expandedProj[p.id];
+          return `
+            <article class="dim-item">
+              <div class="item-date">${p.year}</div>
+              <div>
+                <div class="item-title">
+                  <span>${isZh ? p.titleZh : p.titleEn}</span>
+                  <button class="stack-toggle" type="button" data-exp-proj="${p.id}">
+                    ${open ? (isZh ? '收起' : 'Hide') : (isZh ? '展开说明' : 'Details')}
+                  </button>
+                </div>
+                <p class="item-desc">${isZh ? p.descZh : p.descEn}</p>
+                ${open ? `<p class="item-desc" style="color:var(--ink); border-left:2px solid var(--blue); padding-left:10px;">${isZh ? p.detailZh : p.detailEn}</p>` : ''}
+                <div class="tag-row">${p.stack.map(s => `<span class="tag">${s}</span>`).join('')}</div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderWriting() {
+        const isZh = state.lang === 'zh';
+        document.getElementById('writingIndex').innerHTML = articles.map(a => `
+          <a class="w-row" href="${a.href}">
+            <div class="w-num">${a.num}</div>
+            <div class="w-title">${isZh ? a.titleZh : a.titleEn}</div>
+            <div class="w-meta">${isZh ? a.dateZh : a.dateEn}</div>
+          </a>
+        `).join('');
+      }
+
+      function renderStamps() {
+        const now = Date.now();
+        document.getElementById('stampGrid').innerHTML = gbList.map(m => {
+          const w = gbWhen(m.created_at, now);
+          return `
+          <div class="stamp-card">
+            <span class="stamp-tag">${esc(m.name || '匿名')}</span>
+            <p style="font-size:13.5px; line-height:1.65; color:var(--ink2); margin-bottom:8px; white-space:pre-wrap; overflow-wrap:anywhere;">${esc(m.content)}</p>
+            <div style="font-family:var(--font-mono); font-size:10.5px; color:var(--mute);" title="${esc(w.full)}">${esc(w.d)}</div>
+          </div>`;
+        }).join('');
+        const more = document.getElementById('gbMoreBtn');
+        if (more) more.style.display = gbHasMore ? '' : 'none';
+        gbStatusLine();
+      }
+
+      function renderResume() {
+        const isZh = state.lang === 'zh';
+        document.getElementById('paperNum').textContent = `${state.resumePage} / 2`;
+        document.getElementById('resFlipBtn').textContent = state.resumePage === 1
+          ? (isZh ? '第 1 / 2 页 →' : 'Page 1 / 2 →')
+          : (isZh ? '← 第 2 / 2 页' : '← Page 2 / 2');
+
+        const body = document.getElementById('paperBody');
+        if (state.resumePage === 1) {
+          body.innerHTML = isZh ? `
+            <div class="p-head">
+              <div>
+                <div class="p-name">肖亮 · Liang</div>
+                <div class="p-role">AI 应用开发 · 全栈开发者，写代码，也写字。</div>
+              </div>
+              <div class="p-contact">eangyang0504@gmail.com<br/>github.com/xiaoliangao<br/>xiaoliang.hnyy.online</div>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Profile · 个人简介</div>
+              <p class="p-desc">全栈开发者，写代码，也写字。2026 年在杭州灵医科技独立落地企业级 RAG 知识库问答系统，之后一个人做完 TaskRAG，从架构、编码、测试到部署运维全程独立完成。关心模型在真实场景里的稳定性，也讲究软件本身的干净与顺手。</p>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Experience · 实践与经历</div>
+              <div class="p-row"><div class="p-row-t">AI 应用开发实习生 · 杭州灵医科技</div><div class="p-row-d">2026.03 — 2026.06</div></div>
+              <p class="p-desc">独立设计并落地企业级 RAG 知识库问答系统——离线索引 + 在线查询双管道，混合检索 + RRF 融合 + Reranker 精排 + SSE 流式生成；标准问题集 Hit Rate 72%→87%、引用溯源 Faithfulness 0.68→0.91，覆盖降级、多租户权限隔离与成本控制。</p>
+              <div class="p-row"><div class="p-row-t">独立开发 · 个人项目</div><div class="p-row-d">2026.06 — 至今</div></div>
+              <p class="p-desc">一个人做完线上产品：TaskRAG（研究追踪 RAG）。从架构、编码、测试到 Docker + Nginx + HTTPS 部署运维，全程独立完成；现在在做一个新 App。</p>
+            </div>
+            <div class="p-sec" style="margin-bottom:0;">
+              <div class="p-sec-title">Education · 教育背景</div>
+              <div class="p-row"><div class="p-row-t">浙江理工大学 · 计算机技术 · 硕士</div><div class="p-row-d">2025.09 — 2028.06</div></div>
+              <p class="p-desc" style="margin-bottom:0;">计算机技术硕士在读。</p>
+            </div>
+          ` : `
+            <div class="p-head">
+              <div>
+                <div class="p-name">Liang (xiaoliang)</div>
+                <div class="p-role">Full-Stack Developer · AI Application Engineering</div>
+              </div>
+              <div class="p-contact">eangyang0504@gmail.com<br/>github.com/xiaoliangao<br/>xiaoliang.hnyy.online</div>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Profile</div>
+              <p class="p-desc">Full-stack developer who also writes. In 2026 I shipped an enterprise RAG knowledge-base Q&A system as an intern at Lingyi Technology (Hangzhou), then built TaskRAG end to end on my own — architecture, code, tests, and deployment. I care about model reliability in real use, and about software that is clean and pleasant to use.</p>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Experience</div>
+              <div class="p-row"><div class="p-row-t">AI Application Engineering Intern · Lingyi Technology, Hangzhou</div><div class="p-row-d">Mar 2026 — Jun 2026</div></div>
+              <p class="p-desc">Designed and shipped an enterprise RAG knowledge-base Q&A system: offline indexing + online retrieval pipelines, hybrid search + RRF fusion + reranking + SSE streaming. Hit Rate 72%→87% and citation Faithfulness 0.68→0.91 on the standard set, with fallbacks, multi-tenant isolation and cost controls.</p>
+              <div class="p-row"><div class="p-row-t">Independent Developer · Personal Projects</div><div class="p-row-d">Jun 2026 — Present</div></div>
+              <p class="p-desc">Shipped TaskRAG (research-tracking RAG) end to end solo — architecture, code, tests, Docker + Nginx + HTTPS operations; now building a new app.</p>
+            </div>
+            <div class="p-sec" style="margin-bottom:0;">
+              <div class="p-sec-title">Education</div>
+              <div class="p-row"><div class="p-row-t">Zhejiang Sci-Tech University · Computer Technology · Master’s</div><div class="p-row-d">Sep 2025 — Jun 2028</div></div>
+              <p class="p-desc" style="margin-bottom:0;">M.S. in Computer Technology, in progress.</p>
+            </div>
+          `;
+        } else {
+          body.innerHTML = isZh ? `
+            <div class="p-head">
+              <div>
+                <div class="p-name" style="font-size:26px;">肖亮 · 代表项目与技能</div>
+                <div class="p-role">Page 2 · Projects &amp; Technical Stack</div>
+              </div>
+              <div class="p-contact">xiaoliang.hnyy.online</div>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Selected Projects · 项目精选</div>
+              <div class="p-row"><div class="p-row-t">TaskRAG · 研究追踪 RAG 系统</div><div class="p-row-d">2026</div></div>
+              <p class="p-desc">替你每天读 arXiv / HuggingFace / GitHub 的研究管家——问它，答案带引用。在线体验：taskrag.hnyy.online。</p>
+              <div class="p-row"><div class="p-row-t">企业级 RAG 知识库问答系统 · 杭州灵医科技</div><div class="p-row-d">2026</div></div>
+              <p class="p-desc">离线索引 + 在线查询双管道，混合检索 + RRF 融合 + Reranker 精排 + SSE 流式生成；Hit Rate 72%→87%，Faithfulness 0.68→0.91。</p>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Skills · 技术栈</div>
+              <p class="p-desc"><strong>前端：</strong>React、Next.js、TypeScript、Vite、Tailwind<br/><strong>后端 &amp; AI：</strong>Python、FastAPI、RAG、LLM Agents、Qdrant、pgvector、PostgreSQL<br/><strong>工程 &amp; 部署：</strong>Docker、Linux、Nginx、Cloudflare、CI/CD</p>
+            </div>
+            <div class="p-sec" style="margin-bottom:0;">
+              <div class="p-sec-title">Find Me · 找到我</div>
+              <p class="p-desc" style="margin-bottom:0;">github.com/xiaoliangao · eangyang0504@gmail.com · 留言墙</p>
+            </div>
+          ` : `
+            <div class="p-head">
+              <div>
+                <div class="p-name" style="font-size:26px;">Liang — Projects &amp; Stack</div>
+                <div class="p-role">Page 2 · Selected Work &amp; Technical Skills</div>
+              </div>
+              <div class="p-contact">xiaoliang.hnyy.online</div>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Selected Projects</div>
+              <div class="p-row"><div class="p-row-t">TaskRAG · Research-Tracking RAG</div><div class="p-row-d">2026</div></div>
+              <p class="p-desc">A research assistant that reads arXiv / HuggingFace / GitHub for you every day — ask it, answers come with citations. Live at taskrag.hnyy.online.</p>
+              <div class="p-row"><div class="p-row-t">Enterprise RAG Knowledge-Base Q&A · Lingyi Technology</div><div class="p-row-d">2026</div></div>
+              <p class="p-desc">Offline indexing + online retrieval pipelines, hybrid search + RRF fusion + reranking + SSE streaming; Hit Rate 72%→87%, Faithfulness 0.68→0.91.</p>
+            </div>
+            <div class="p-sec">
+              <div class="p-sec-title">Technical Stack</div>
+              <p class="p-desc"><strong>Frontend:</strong> React, Next.js, TypeScript, Vite, Tailwind<br/><strong>Backend &amp; AI:</strong> Python, FastAPI, RAG, LLM Agents, Qdrant, pgvector, PostgreSQL<br/><strong>Engineering &amp; Ops:</strong> Docker, Linux, Nginx, Cloudflare, CI/CD</p>
+            </div>
+            <div class="p-sec" style="margin-bottom:0;">
+              <div class="p-sec-title">Find Me</div>
+              <p class="p-desc" style="margin-bottom:0;">github.com/xiaoliangao · eangyang0504@gmail.com · Guestbook</p>
+            </div>
+          `;
+        }
+      }
+
+      function syncUI() {
+        const isZh = state.lang === 'zh';
+        document.getElementById('langBtn').textContent = isZh ? 'EN' : '中';
+        document.getElementById('leftRole').textContent = isZh
+          ? '全栈开发者，写代码，也写字。专注 AI 应用开发与 Agent 工程。'
+          : 'Full-stack developer. Focused on AI applications & Agent engineering.';
+        document.getElementById('nowText').textContent = nowList[state.lang][state.nowIdx];
+
+        document.getElementById('heroH1').innerHTML = isZh
+          ? '把一闪而过，做成<em>一直在</em>。'
+          : 'Make the fleeting <em>stay</em>.';
+        document.getElementById('heroP1').innerHTML = isZh
+          ? '你好，我是<strong>肖亮（Liang）</strong>，全栈开发者，写代码，也写字。目前主攻 <strong>AI 应用开发</strong>：2026 年在杭州灵医科技独立落地了企业级 RAG 知识库问答系统，之后一个人做完了 TaskRAG，从架构、编码、测试到部署运维全程独立完成。'
+          : 'Hi, I’m <strong>Liang</strong>, a full-stack developer who also writes. I work on <strong>AI applications</strong>: in 2026 I shipped an enterprise RAG knowledge-base Q&A system as an intern at Lingyi Technology (Hangzhou), then built TaskRAG end to end on my own — architecture, code, tests, and deployment.';
+        document.getElementById('heroP2').innerHTML = isZh
+          ? '相比停留在演示阶段的概念 Demo，我更在意模型在真实场景里的稳定性：怎么降低幻觉、怎么缩短首字响应、怎么让普通用户不用学复杂指令也能顺畅用起来。目前正在寻找 <strong>AI 应用研发相关的实习与校招机会</strong>，下面是我近期的作品与技术复盘。'
+          : 'Beyond proof-of-concept demos, I care about making models reliable in real use — curbing hallucinations, tightening latency, and keeping interfaces effortless. Currently <strong>open to AI Engineering internships and graduate roles</strong> — here’s my recent work and notes.';
+
+        document.getElementById('dock-home').textContent = isZh ? '首页' : 'Home';
+        document.getElementById('dock-guestbook').textContent = isZh ? '留言墙' : 'Guestbook';
+        document.getElementById('dock-resume').textContent = isZh ? '简历' : 'Resume';
+        document.getElementById('soundLabel').textContent = isZh ? '天空之城' : 'Laputa';
+        document.getElementById('copyEmailBtn').textContent = isZh ? '复制联系邮箱' : 'Copy Email';
+        document.getElementById('footerMotto').textContent = isZh
+          ? '“带着离开的决心，只为更好的归来。” · © 2026 Liang'
+          : '“Depart with resolve, return with better work.” · © 2026 Liang';
+        document.getElementById('sealHintBtn').textContent = isZh
+          ? '点击空白处可落「Liang」印章'
+          : 'Tap empty space to stamp "Liang"';
+
+        renderExperience();
+        renderProjects();
+        renderWriting();
+        renderResume();
+      }
+
+      function switchView(v) {
+        state.view = v;
+        document.querySelectorAll('.view').forEach(el => el.classList.toggle('active', el.id === 'view-' + v));
+        document.querySelectorAll('.dock-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === v));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function flipPaper() {
+        const s = document.getElementById('paperSheet');
+        s.classList.add('flipping');
+        setTimeout(() => {
+          state.resumePage = state.resumePage === 1 ? 2 : 1;
+          renderResume();
+          s.classList.remove('flipping');
+        }, 160);
+      }
+
+      function updateScrollSpy() {
+        if (state.view !== 'home') return;
+        const docH = document.documentElement.scrollHeight;
+        const winH = window.innerHeight;
+        const ids = ['sec-about', 'sec-exp', 'sec-proj', 'sec-writing'];
+        let current = ids[0];
+        if (window.scrollY + winH >= docH - 36) {
+          current = ids[ids.length - 1];
+        } else {
+          const anchorY = winH * 0.36;
+          for (const id of ids) {
+            const el = document.getElementById(id);
+            if (el && el.getBoundingClientRect().top <= anchorY) current = id;
+          }
+        }
+        document.querySelectorAll('.snav-btn').forEach(b => b.classList.toggle('active', b.dataset.scroll === current));
+      }
+
+      function esc(str) {
+        return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      /* ---- Event Listeners ---- */
+      window.addEventListener('resize', buildParticles);
+      window.addEventListener('scroll', updateScrollSpy, { passive: true });
+
+      window.addEventListener('pointermove', (e) => {
+        pointer.x = e.clientX;
+        pointer.y = e.clientY;
+        pointer.active = true;
+        pointer.lastMoveAt = performance.now();
       });
-      if (!done && !cursorPlaced) {
-        cursorPlaced = true;
-        spans.push(h('span', { key: 'cur', style: { display: 'inline-block', width: '7px', height: '1.05em', background: '#ff5230', verticalAlign: '-2px', marginLeft: '1px' } }));
+      window.addEventListener('pointerleave', () => { pointer.active = false; });
+
+      canvas.addEventListener('pointerdown', (e) => placeSeal(e.clientX, e.clientY));
+
+      document.getElementById('sealHintBtn').addEventListener('click', () => {
+        placeSeal(cw * (0.3 + Math.random() * 0.4), ch * (0.25 + Math.random() * 0.45));
+      });
+      document.getElementById('clearSealsBtn').addEventListener('click', clearSeals);
+
+      document.getElementById('emblemBtn').addEventListener('click', (e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        triggerGentleRipple(r.left + r.width / 2, r.top + r.height / 2);
+      });
+
+      document.getElementById('brandBtn').addEventListener('click', () => switchView('home'));
+      document.getElementById('cmdBtn').addEventListener('click', () => toggleCmd(true));
+
+      document.getElementById('langBtn').addEventListener('click', () => {
+        state.lang = state.lang === 'zh' ? 'en' : 'zh';
+        syncUI();
+      });
+
+      document.getElementById('nowPill').addEventListener('click', () => {
+        state.nowIdx = (state.nowIdx + 1) % nowList.zh.length;
+        document.getElementById('nowText').textContent = nowList[state.lang][state.nowIdx];
+      });
+
+      document.getElementById('copyEmailBtn').addEventListener('click', copyEmail);
+
+      document.querySelectorAll('.snav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.snav-btn').forEach(b => b.classList.toggle('active', b === btn));
+          const el = document.getElementById(btn.dataset.scroll);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      document.getElementById('projFilter').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-filter]');
+        if (!b) return;
+        state.projFilter = b.dataset.filter;
+        document.querySelectorAll('#projFilter .flt-btn').forEach(x => x.classList.toggle('active', x === b));
+        renderProjects();
+      });
+
+      document.getElementById('cmdModal').addEventListener('click', (e) => {
+        if (e.target.id === 'cmdModal') { toggleCmd(false); return; }
+        const item = e.target.closest('[data-cmd]');
+        if (!item) return;
+        const cmd = item.dataset.cmd;
+        toggleCmd(false);
+        if (cmd === 'music') toggleMusic();
+        else if (cmd === 'seal') placeSeal(cw * (0.3 + Math.random() * 0.4), ch * (0.25 + Math.random() * 0.45));
+        else if (cmd === 'resume') switchView('resume');
+        else if (cmd === 'guestbook') switchView('guestbook');
+        else if (cmd === 'email') copyEmail();
+      });
+
+      document.addEventListener('click', (e) => {
+        const nav = e.target.closest('[data-nav]');
+        if (nav) { switchView(nav.dataset.nav); return; }
+
+        const exp = e.target.closest('[data-exp-proj]');
+        if (exp) {
+          const id = exp.dataset.expProj;
+          state.expandedProj[id] = !state.expandedProj[id];
+          renderProjects();
+          return;
+        }
+
+      });
+
+      document.getElementById('gbForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (gbPosting) return;
+        const n = document.getElementById('gbName');
+        const m = document.getElementById('gbMsg');
+        const hp = document.getElementById('gbHp');
+        const name = n.value.trim();
+        const text = m.value.trim();
+        const msgEl = document.getElementById('gbFormMsg');
+        const setMsg = (t, err) => { if (msgEl) { msgEl.textContent = t; msgEl.style.color = err ? '#d9381a' : '#059669'; } };
+        if (!text) return setMsg('留言内容不能为空', true);
+        if (gbLen(name) > GB_NAME_MAX) return setMsg('名字最多 ' + GB_NAME_MAX + ' 个字', true);
+        if (gbLen(text) > GB_TEXT_MAX) return setMsg('留言最多 ' + GB_TEXT_MAX + ' 个字', true);
+        gbPosting = true;
+        setMsg('', false);
+        const r = await gbFetch(GB_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, content: text, website: hp ? hp.value : '' })
+        });
+        gbPosting = false;
+        if (!r.ok || !r.data.item) {
+          setMsg(r.data.message || (r.status === 429 ? '发得太快了，稍后再试' : '没贴上去，稍后再试'), true);
+          return;
+        }
+        try { localStorage.setItem('xl-gb-name', name); } catch (err) {}
+        const item = { ...r.data.item };
+        gbList = [item, ...gbList.filter((x) => x.id !== item.id)];
+        gbTotal = (gbTotal || 0) + 1;
+        m.value = '';
+        updateGbCount();
+        renderStamps();
+        playStampSound();
+        setMsg('贴好了', false);
+        toast(state.lang === 'zh' ? '留言已落印' : 'Message stamped');
+      });
+
+      function updateGbCount() {
+        const el = document.getElementById('gbCount');
+        if (!el) return;
+        const len = gbLen(document.getElementById('gbMsg').value);
+        el.textContent = len + ' / ' + GB_TEXT_MAX;
+        el.style.color = len > GB_TEXT_MAX - 20 ? '#d9381a' : '';
       }
-      const flash = done && line.badge ? (line.badge[1] === 'g' ? 'rowFlashG .8s both' : 'rowFlashO .8s both') : 'none';
-      rows.push(h('div', { key: i, style: { ...rowBase, animation: flash } },
-        h('span', { style: { width: '24px', flex: 'none', color: '#544c3e' } }, i + 1),
-        h('span', { style: { flex: 1 } }, spans),
-        done && line.badge ? h('span', { style: { flex: 'none', fontSize: '9.5px', letterSpacing: '.14em', fontWeight: 700, color: line.badge[1] === 'g' ? '#4a9e6b' : '#ff5230' } }, line.badge[0]) : null
-      ));
-    });
-    if (this.state.bootMs) {
-      const ok = (t) => [h('span', { key: t, style: { color: '#4a9e6b' } }, '✓ '), t, '\u00a0\u00a0'];
-      rows.push(h('div', { key: 'ok', style: { fontSize: '11.5px', color: '#9a8f7c', marginTop: '10px' } },
-        ok('timeline mounted'), ok('运行中 ×2'), ok('随笔 ×2'), ok('guestbook'),
-        h('span', { style: { color: '#544c3e' } }, 'ready in ' + (this.state.bootMs / 1000).toFixed(2) + 's')));
-    }
-    return rows;
-  }
+      try { const saved = localStorage.getItem('xl-gb-name'); if (saved) document.getElementById('gbName').value = saved.slice(0, GB_NAME_MAX); } catch (err) {}
+      document.getElementById('gbMsg').addEventListener('input', updateGbCount);
+      document.getElementById('gbMsg').addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' || e.nativeEvent.isComposing || e.keyCode === 229) return;
+        if (e.shiftKey) return;
+        e.preventDefault();
+        document.getElementById('gbForm').requestSubmit();
+      });
+      document.getElementById('gbName').addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' || e.nativeEvent.isComposing || e.keyCode === 229) return;
+        e.preventDefault();
+        document.getElementById('gbForm').requestSubmit();
+      });
+      document.getElementById('gbMoreBtn').addEventListener('click', () => gbLoad(true));
 
-  setZh = (e) => { e.preventDefault(); this.setState({ lang: 'zh' }); };
-  setEn = (e) => { e.preventDefault(); this.setState({ lang: 'en' }); };
-  replayBoot = (e) => {
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    this.startBoot();
-  };
-  clockToggle = (e) => { e.preventDefault(); this.setState({ clockMode: this.state.clockMode === 'time' ? 'uptime' : 'time' }); };
-  curMove = (e) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    const big = !!(e.target && e.target.closest && e.target.closest('a,input'));
-    this.setState({ cur: { x: e.clientX - r.left, y: e.clientY - r.top, big, on: true } });
-  };
-  curLeave = () => { this.setState({ cur: { ...this.state.cur, on: false } }); };
-  nowToggle = (e) => { e.preventDefault(); this.setState({ nowOpen: !this.state.nowOpen }); };
-  nowOn = () => { this.setState({ nowOpen: true }); };
-  nowOff = () => { this.setState({ nowOpen: false }); };
-  mqEnter = () => { this.setState({ mqHover: true }); };
-  mqLeave = () => { this.setState({ mqHover: false }); };
-  mqClick = (e) => { e.preventDefault(); this.setState({ mqLock: !this.state.mqLock }); };
-  tiltMove = (e) => {
-    const k = e.currentTarget.getAttribute('data-tilt');
-    const r = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    this.setState({ ['tilt' + k]: { rx: -py * 7, ry: px * 9 }, hovP: k });
-  };
-  tiltLeave = (e) => {
-    const k = e.currentTarget.getAttribute('data-tilt');
-    this.setState({ ['tilt' + k]: { rx: 0, ry: 0 }, hovP: 0 });
-  };
-  projEnter = (e) => { this.setState({ hovP: e.currentTarget.getAttribute('data-tilt') }); };
-  projLeave = () => { this.setState({ hovP: 0 }); };
-  tiltStyle(k) {
-    return { width: '100%', height: '100%', transformStyle: 'preserve-3d' };
-  }
+      document.getElementById('pageCurlBtn').addEventListener('click', flipPaper);
+      document.getElementById('resFlipBtn').addEventListener('click', flipPaper);
+      document.getElementById('resLangBtn').addEventListener('click', () => {
+        state.lang = state.lang === 'zh' ? 'en' : 'zh';
+        syncUI();
+      });
+      document.getElementById('resPrintBtn').addEventListener('click', () => window.print());
+      document.getElementById('soundBtn').addEventListener('click', toggleMusic);
 
-  renderVals() {
-    const zh = this.state.lang === 'zh';
-    const chip = (on) => ({
-      fontFamily: "'JetBrains Mono',monospace", fontSize: '10.5px', padding: '4px 11px', cursor: 'pointer',
-      background: on ? '#ff5230' : 'transparent', color: on ? '#0d0b08' : '#9a8f7c', fontWeight: 700
-    });
-    return {
-      isZh: zh,
-      isEn: !zh,
-      nav1: zh ? '近况' : 'Now',
-      nav2: zh ? '留言墙' : 'Guestbook',
-      nav3: zh ? '简历 CV' : 'Résumé',
-      pillText: zh ? '在做一个新 App' : 'Building a new app',
-      tlHeader: zh ? 'TIMELINE — 运行中 ×2 · 随笔 ×2' : 'TIMELINE — 2 RUNNING · 2 NOTES',
-      nowText: zh ? '下一站：一个 App，编译中' : 'next stop: an app, compiling',
-      setZh: this.setZh,
-      setEn: this.setEn,
-      zhChip: chip(zh),
-      enChip: chip(!zh),
-      replayBoot: this.replayBoot,
-      skipBoot: this.skipBoot,
-      bootOn: this.state.boot,
-      bootRows: this.state.boot ? this.bootRows() : null,
-      bootBarStyle: {
-        width: (this.state.bootP * 100).toFixed(2) + '%', height: '100%', background: '#ff5230',
-        boxShadow: '0 0 10px rgba(255,82,48,.8)'
-      },
-      bootStatus: this.state.bootMs ? 'ready ✦' : (() => {
-        let li = 0;
-        while (li < BOOT_LINES.length - 1 && this.state.bootTyped >= BOOT_OFFSETS[li + 1]) li++;
-        const phase = this.state.bootTyped >= BOOT_UNITS ? 'loading assets' : BOOT_PHASES[li];
-        return String(Math.floor(this.state.bootP * 100)).padStart(3, '\u2007') + '% · ' + phase;
-      })(),
-      bootStyle: {
-        position: 'fixed', inset: 0, zIndex: 200, background: '#0d0b08',
-        display: 'grid', placeItems: 'center', transition: 'opacity .5s',
-        opacity: this.state.boot ? 1 : 0,
-        pointerEvents: this.state.boot ? 'auto' : 'none'
-      },
-      clockToggle: this.clockToggle,
-      clockText: this.state.clockMode === 'time'
-        ? (this.state.t || '00:00:00')
-        : '已运行 ' + Math.floor((Date.now() - new Date('2024-07-01').getTime()) / 86400000) + ' 天',
-      curMove: this.curMove,
-      curLeave: this.curLeave,
-      cursorDotStyle: {
-        position: 'absolute', left: this.state.cur.x + 'px', top: this.state.cur.y + 'px', zIndex: 300,
-        pointerEvents: 'none', transform: 'translate(-50%,-50%)',
-        width: (this.state.cur.big ? 32 : 9) + 'px', height: (this.state.cur.big ? 32 : 9) + 'px',
-        borderRadius: '99px',
-        background: this.state.cur.big ? 'transparent' : '#f0dcb4',
-        border: this.state.cur.big ? '1.5px solid #f0dcb4' : 'none',
-        mixBlendMode: 'difference',
-        opacity: this.state.cur.on ? 1 : 0,
-        transition: 'width .18s, height .18s, background .18s, border .18s, opacity .25s'
-      },
-      nowToggle: this.nowToggle,
-      nowOn: this.nowOn,
-      nowOff: this.nowOff,
-      nowBubbleStyle: {
-        position: 'absolute', left: '50%', bottom: '32px', zIndex: 30, width: '250px',
-        transform: 'translateX(-50%) ' + (this.state.nowOpen ? 'translateY(0) scale(1)' : 'translateY(8px) scale(.92)'),
-        opacity: this.state.nowOpen ? 1 : 0,
-        pointerEvents: this.state.nowOpen ? 'auto' : 'none',
-        background: '#14100b', border: '1px solid rgba(240,232,216,.22)', borderRadius: '14px',
-        padding: '16px 18px', boxShadow: '0 22px 54px rgba(0,0,0,.65)',
-        transition: 'all .22s cubic-bezier(.2,.7,.3,1.2)'
-      },
-      mqEnter: this.mqEnter, mqLeave: this.mqLeave, mqClick: this.mqClick,
-      mqStyle: {
-        display: 'inline-flex', whiteSpace: 'nowrap',
-        animation: 'marquee 14s linear infinite',
-        animationPlayState: (this.state.mqHover || this.state.mqLock) ? 'paused' : 'running',
-        fontFamily: "'JetBrains Mono',monospace", fontSize: '12.5px', fontWeight: 700,
-        letterSpacing: '.22em', padding: '9px 0'
-      },
-      tiltMove: this.tiltMove, tiltLeave: this.tiltLeave,
-      projEnter: this.projEnter, projLeave: this.projLeave,
-      tilt1Style: this.tiltStyle(1),
-      tilt2Style: this.tiltStyle(2),
-      d1: this.state.hovP === '1' ? '06-08' : '运行中',
-      d2: this.state.hovP === '2' ? '05-18' : '运行中'
-    };
-  }
-}
-</script>
-<script>
-// Page-wide background: dot grid + warm spotlight that lights up the dots around the pointer,
-// plus a fading pointer trail. Plain DOM/canvas outside the dc/React tree so moves never re-render.
-(() => {
-  const WARM = '240,220,180';
-  const layer = (css) => {
-    const el = document.createElement('div');
-    el.setAttribute('aria-hidden', 'true');
-    el.style.cssText = 'position:fixed;inset:0;z-index:-1;pointer-events:none;' + css;
-    document.body.appendChild(el);
-    return el;
-  };
-  const DOTS = 'background-size:26px 26px;background-position:13px 13px;';
-  layer(DOTS + 'background-image:radial-gradient(rgba(240,232,216,.07) 1px,transparent 1.3px)');
 
-  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!fine) return;
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          toggleCmd();
+          return;
+        }
+        if (e.key === 'Escape') {
+          toggleCmd(false);
+        }
+      });
 
-  // pages without their own cursor (.cur-none) get the same blended dot as the home page
-  if (!document.querySelector('.cur-none')) {
-    const st = document.createElement('style');
-    st.textContent = 'html.xl-cur,html.xl-cur *{cursor:none!important}';
-    document.head.appendChild(st);
-    document.documentElement.classList.add('xl-cur');
-    const dot = document.createElement('div');
-    dot.setAttribute('aria-hidden', 'true');
-    dot.style.cssText = 'position:fixed;left:0;top:0;z-index:300;pointer-events:none;width:9px;height:9px;border-radius:99px;background:#f0dcb4;border:1.5px solid transparent;mix-blend-mode:difference;opacity:0;transform:translate(-50%,-50%);transition:width .18s,height .18s,background .18s,border-color .18s,opacity .25s';
-    document.body.appendChild(dot);
-    addEventListener('pointermove', (e) => {
-      if (e.pointerType !== 'mouse') return;
-      const big = !!(e.target.closest && e.target.closest('a,button,input,textarea,[role=button]'));
-      dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px'; dot.style.opacity = '1';
-      dot.style.width = dot.style.height = big ? '32px' : '9px';
-      dot.style.background = big ? 'transparent' : '#f0dcb4';
-      dot.style.borderColor = big ? '#f0dcb4' : 'transparent';
-    }, { passive: true });
-    document.documentElement.addEventListener('pointerleave', () => { dot.style.opacity = '0'; });
-  }
-
-  const MASK = 'radial-gradient(circle 230px at var(--mx) var(--my),#000,rgba(0,0,0,.35) 55%,transparent 100%)';
-  const fade = 'opacity:0;transition:opacity .4s;';
-  const glow = layer(fade + 'background:radial-gradient(circle 460px at var(--mx) var(--my),rgba(' + WARM + ',.085),rgba(' + WARM + ',.03) 45%,transparent 75%)');
-  const lit = layer(fade + DOTS + 'background-image:radial-gradient(rgba(' + WARM + ',.6) 1.1px,transparent 1.5px);-webkit-mask-image:' + MASK + ';mask-image:' + MASK);
-  const setPos = (x, y) => {
-    for (const el of [glow, lit]) { el.style.setProperty('--mx', x + 'px'); el.style.setProperty('--my', y + 'px'); }
-  };
-  const show = (on) => { glow.style.opacity = lit.style.opacity = on ? '1' : '0'; };
-
-  let cv = null, ctx = null, w = 0, h = 0;
-  if (!still) {
-    cv = document.createElement('canvas');
-    cv.setAttribute('aria-hidden', 'true');
-    cv.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none';
-    document.body.appendChild(cv);
-    ctx = cv.getContext('2d');
-    const resize = () => {
-      const dpr = Math.min(devicePixelRatio || 1, 2);
-      w = innerWidth; h = innerHeight;
-      cv.width = w * dpr; cv.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    addEventListener('resize', resize);
-  }
-
-  const TRAIL_MS = 520, SPARK_MS = 900;
-  const trail = [], sparks = [];
-  let raf = 0, last = null;
-
-  addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return;
-    const x = e.clientX, y = e.clientY;
-    setPos(x, y);
-    show(true);
-    if (!ctx) return;
-    const now = performance.now();
-    trail.push({ x, y, t: now });
-    if (last) {
-      const d = Math.hypot(x - last.x, y - last.y);
-      if (Math.random() < Math.min(d / 45, 0.7)) {
-        const a = Math.random() * Math.PI * 2, v = 0.2 + Math.random() * 0.6;
-        sparks.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.25, r: 0.8 + Math.random() * 1.6, t: now, hot: Math.random() < 0.18 });
-      }
-    }
-    last = { x, y };
-    if (!raf) raf = requestAnimationFrame(draw);
-  }, { passive: true });
-  document.documentElement.addEventListener('pointerleave', () => { last = null; show(false); });
-
-  function draw(now) {
-    ctx.clearRect(0, 0, w, h);
-    while (trail.length && now - trail[0].t > TRAIL_MS) trail.shift();
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    // two passes: wide faint glow, then thin bright core
-    for (const [wMul, aMul] of [[4.5, 0.08], [1, 0.45]]) {
-      for (let i = 1; i < trail.length; i++) {
-        const a = trail[i - 1], b = trail[i];
-        const k = 1 - (now - b.t) / TRAIL_MS;
-        ctx.strokeStyle = 'rgba(' + WARM + ',' + (k * k * aMul).toFixed(3) + ')';
-        ctx.lineWidth = (0.6 + k * 2.6) * wMul;
-        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-      }
-    }
-    for (let i = sparks.length - 1; i >= 0; i--) {
-      const s = sparks[i], k = 1 - (now - s.t) / SPARK_MS;
-      if (k <= 0) { sparks.splice(i, 1); continue; }
-      s.x += s.vx; s.y += s.vy; s.vx *= 0.97; s.vy = s.vy * 0.97 - 0.004;
-      ctx.fillStyle = s.hot ? 'rgba(255,82,48,' + (k * 0.7).toFixed(3) + ')' : 'rgba(' + WARM + ',' + (k * 0.6).toFixed(3) + ')';
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * (0.4 + k * 0.6), 0, Math.PI * 2); ctx.fill();
-    }
-    raf = (trail.length || sparks.length) ? requestAnimationFrame(draw) : 0;
-    if (!raf) ctx.clearRect(0, 0, w, h);
-  }
-})();
-</script>
+      initWebGL();
+      buildParticles();
+      stepAndRender();
+      gbLoad();
+      updateGbCount();
+      syncUI();
+      updateScrollSpy();
+    })();
+  </script>
 </body>
 </html>
