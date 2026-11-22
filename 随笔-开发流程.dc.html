@@ -50,7 +50,8 @@
       display: block;
     }
 
-    /* Personal "Liang" Seal Overlay */
+    /* Personal "Liang" Seal Overlay — only on the home view; hidden on Git etc. */
+    body:not([data-view="home"]) #stampOverlay { display: none; }
     #stampOverlay {
       position: fixed;
       inset: 0;
@@ -104,7 +105,7 @@
       z-index: 2;
       max-width: 1020px;
       margin: 0 auto;
-      padding: 0 28px 128px;
+      padding: max(12px, env(safe-area-inset-top, 0px)) 28px 128px;
       pointer-events: none;
     }
 
@@ -808,7 +809,7 @@
     }
 
     /* Git activity view (dock tab) — light editorial style, full-year heatmap */
-    .git-page { padding: 8px 0 30px; }
+    .git-page { padding: 8px 0 120px; }
     .git-h {
       font-family: var(--font-heading);
       font-size: 30px;
@@ -831,8 +832,8 @@
     }
     .git-stat-n { font-family: var(--font-heading); font-size: 26px; font-weight: 600; }
     .git-stat-l { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; color: var(--mute); margin-top: 2px; }
-    .git-cal-wrap { overflow-x: auto; padding-bottom: 4px; }
-    .git-cal { display: inline-flex; gap: 10px; }
+    .git-cal-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; scrollbar-width: thin; padding-bottom: 4px; pointer-events: auto; }
+    .git-cal { display: inline-flex; gap: 10px; width: max-content; }
     .git-cal-days { position: relative; width: 24px; flex: none; font-family: var(--font-mono); font-size: 9.5px; color: var(--mute); }
     .git-cal-days span { position: absolute; left: 0; }
     .git-cal-days span:nth-child(1) { top: 37px; }
@@ -852,9 +853,6 @@
     .git-legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; border: 1px solid var(--border); }
     .git-day { margin: 12px 0 4px; font-size: 13px; color: var(--ink2); }
     .git-clear { margin-left: 8px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--border); background: #fff; font-size: 12px; cursor: pointer; color: var(--ink2); }
-    .git-filters { display: flex; gap: 6px; margin: 16px 0 8px; flex-wrap: wrap; }
-    .git-filter { padding: 6px 13px; border-radius: 999px; border: 1px solid var(--border); background: transparent; font-size: 12.5px; cursor: pointer; color: var(--ink2); }
-    .git-filter.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
     .git-day-h { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; color: var(--mute); margin: 18px 0 6px; }
     .git-item { display: flex; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--border); font-size: 13.5px; align-items: baseline; }
     .git-item-time { font-family: var(--font-mono); font-size: 11.5px; color: var(--mute); flex: none; width: 44px; }
@@ -869,6 +867,10 @@
     @media (max-width: 860px) {
       .git-stats { grid-template-columns: repeat(2, 1fr); }
       .git-h { font-size: 25px; }
+      .git-item { gap: 8px; align-items: flex-start; }
+      .git-item-time { width: 36px; font-size: 11px; padding-top: 1px; }
+      .git-item-msg { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+      .git-repo { font-size: 10px; padding: 1px 6px; margin-top: 1px; }
     }
 
     /* Bottom Floating Capsule Dock */
